@@ -12,6 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as SuiviRouteImport } from './routes/suivi'
+import { Route as AuthenticatedCasiersRouteImport } from './routes/_authenticated/casiers'
+import { Route as AuthenticatedLivraisonsRouteImport } from './routes/_authenticated/livraisons'
+import { Route as AuthenticatedReclamationsRouteImport } from './routes/_authenticated/reclamations'
+import { Route as AuthenticatedRetraitsRouteImport } from './routes/_authenticated/retraits'
+import { Route as AuthenticatedClientsIndexRouteImport } from './routes/_authenticated/clients.index'
+import { Route as AuthenticatedClientsIdRouteImport } from './routes/_authenticated/clients.$id'
 import { Route as AuthenticatedCommandesIndexRouteImport } from './routes/_authenticated/commandes.index'
 import { Route as AuthenticatedCommandesIdRouteImport } from './routes/_authenticated/commandes.$id'
 import { Route as AuthenticatedCommandesNouvelleRouteImport } from './routes/_authenticated/commandes.nouvelle'
@@ -29,6 +35,38 @@ const SuiviRoute = SuiviRouteImport.update({
   id: '/suivi',
   path: '/suivi',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCasiersRoute = AuthenticatedCasiersRouteImport.update({
+  id: '/casiers',
+  path: '/casiers',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLivraisonsRoute = AuthenticatedLivraisonsRouteImport.update({
+  id: '/livraisons',
+  path: '/livraisons',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedReclamationsRoute =
+  AuthenticatedReclamationsRouteImport.update({
+    id: '/reclamations',
+    path: '/reclamations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedRetraitsRoute = AuthenticatedRetraitsRouteImport.update({
+  id: '/retraits',
+  path: '/retraits',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedClientsIndexRoute =
+  AuthenticatedClientsIndexRouteImport.update({
+    id: '/clients/',
+    path: '/clients/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedClientsIdRoute = AuthenticatedClientsIdRouteImport.update({
+  id: '/clients/$id',
+  path: '/clients/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedCommandesIndexRoute =
   AuthenticatedCommandesIndexRouteImport.update({
@@ -52,15 +90,27 @@ const AuthenticatedCommandesNouvelleRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/suivi': typeof SuiviRoute
+  '/casiers': typeof AuthenticatedCasiersRoute
+  '/livraisons': typeof AuthenticatedLivraisonsRoute
+  '/reclamations': typeof AuthenticatedReclamationsRoute
+  '/retraits': typeof AuthenticatedRetraitsRoute
+  '/clients/$id': typeof AuthenticatedClientsIdRoute
   '/commandes/$id': typeof AuthenticatedCommandesIdRoute
   '/commandes/nouvelle': typeof AuthenticatedCommandesNouvelleRoute
+  '/clients/': typeof AuthenticatedClientsIndexRoute
   '/commandes/': typeof AuthenticatedCommandesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/suivi': typeof SuiviRoute
+  '/casiers': typeof AuthenticatedCasiersRoute
+  '/livraisons': typeof AuthenticatedLivraisonsRoute
+  '/reclamations': typeof AuthenticatedReclamationsRoute
+  '/retraits': typeof AuthenticatedRetraitsRoute
+  '/clients/$id': typeof AuthenticatedClientsIdRoute
   '/commandes/$id': typeof AuthenticatedCommandesIdRoute
   '/commandes/nouvelle': typeof AuthenticatedCommandesNouvelleRoute
+  '/clients': typeof AuthenticatedClientsIndexRoute
   '/commandes': typeof AuthenticatedCommandesIndexRoute
 }
 export interface FileRoutesById {
@@ -68,23 +118,56 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/suivi': typeof SuiviRoute
+  '/_authenticated/casiers': typeof AuthenticatedCasiersRoute
+  '/_authenticated/livraisons': typeof AuthenticatedLivraisonsRoute
+  '/_authenticated/reclamations': typeof AuthenticatedReclamationsRoute
+  '/_authenticated/retraits': typeof AuthenticatedRetraitsRoute
+  '/_authenticated/clients/$id': typeof AuthenticatedClientsIdRoute
   '/_authenticated/commandes/$id': typeof AuthenticatedCommandesIdRoute
   '/_authenticated/commandes/nouvelle': typeof AuthenticatedCommandesNouvelleRoute
+  '/_authenticated/clients/': typeof AuthenticatedClientsIndexRoute
   '/_authenticated/commandes/': typeof AuthenticatedCommandesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/suivi' | '/commandes/$id' | '/commandes/nouvelle' | '/commandes/'
+    | '/'
+    | '/suivi'
+    | '/casiers'
+    | '/livraisons'
+    | '/reclamations'
+    | '/retraits'
+    | '/clients/$id'
+    | '/commandes/$id'
+    | '/commandes/nouvelle'
+    | '/clients/'
+    | '/commandes/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/suivi' | '/commandes/$id' | '/commandes/nouvelle' | '/commandes'
+  to:
+    | '/'
+    | '/suivi'
+    | '/casiers'
+    | '/livraisons'
+    | '/reclamations'
+    | '/retraits'
+    | '/clients/$id'
+    | '/commandes/$id'
+    | '/commandes/nouvelle'
+    | '/clients'
+    | '/commandes'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/suivi'
+    | '/_authenticated/casiers'
+    | '/_authenticated/livraisons'
+    | '/_authenticated/reclamations'
+    | '/_authenticated/retraits'
+    | '/_authenticated/clients/$id'
     | '/_authenticated/commandes/$id'
     | '/_authenticated/commandes/nouvelle'
+    | '/_authenticated/clients/'
     | '/_authenticated/commandes/'
   fileRoutesById: FileRoutesById
 }
@@ -117,6 +200,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuiviRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/casiers': {
+      id: '/_authenticated/casiers'
+      path: '/casiers'
+      fullPath: '/casiers'
+      preLoaderRoute: typeof AuthenticatedCasiersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/livraisons': {
+      id: '/_authenticated/livraisons'
+      path: '/livraisons'
+      fullPath: '/livraisons'
+      preLoaderRoute: typeof AuthenticatedLivraisonsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/reclamations': {
+      id: '/_authenticated/reclamations'
+      path: '/reclamations'
+      fullPath: '/reclamations'
+      preLoaderRoute: typeof AuthenticatedReclamationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/retraits': {
+      id: '/_authenticated/retraits'
+      path: '/retraits'
+      fullPath: '/retraits'
+      preLoaderRoute: typeof AuthenticatedRetraitsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/clients/': {
+      id: '/_authenticated/clients/'
+      path: '/clients'
+      fullPath: '/clients/'
+      preLoaderRoute: typeof AuthenticatedClientsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/clients/$id': {
+      id: '/_authenticated/clients/$id'
+      path: '/clients/$id'
+      fullPath: '/clients/$id'
+      preLoaderRoute: typeof AuthenticatedClientsIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/commandes/': {
       id: '/_authenticated/commandes/'
       path: '/commandes'
@@ -142,14 +267,26 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCasiersRoute: typeof AuthenticatedCasiersRoute
+  AuthenticatedLivraisonsRoute: typeof AuthenticatedLivraisonsRoute
+  AuthenticatedReclamationsRoute: typeof AuthenticatedReclamationsRoute
+  AuthenticatedRetraitsRoute: typeof AuthenticatedRetraitsRoute
+  AuthenticatedClientsIdRoute: typeof AuthenticatedClientsIdRoute
   AuthenticatedCommandesIdRoute: typeof AuthenticatedCommandesIdRoute
   AuthenticatedCommandesNouvelleRoute: typeof AuthenticatedCommandesNouvelleRoute
+  AuthenticatedClientsIndexRoute: typeof AuthenticatedClientsIndexRoute
   AuthenticatedCommandesIndexRoute: typeof AuthenticatedCommandesIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCasiersRoute: AuthenticatedCasiersRoute,
+  AuthenticatedLivraisonsRoute: AuthenticatedLivraisonsRoute,
+  AuthenticatedReclamationsRoute: AuthenticatedReclamationsRoute,
+  AuthenticatedRetraitsRoute: AuthenticatedRetraitsRoute,
+  AuthenticatedClientsIdRoute: AuthenticatedClientsIdRoute,
   AuthenticatedCommandesIdRoute: AuthenticatedCommandesIdRoute,
   AuthenticatedCommandesNouvelleRoute: AuthenticatedCommandesNouvelleRoute,
+  AuthenticatedClientsIndexRoute: AuthenticatedClientsIndexRoute,
   AuthenticatedCommandesIndexRoute: AuthenticatedCommandesIndexRoute,
 }
 
