@@ -18,7 +18,7 @@ function Complaints() {
     queryKey: ["complaints"],
     queryFn: async () => (await supabase.from("complaints").select("*, orders(id, number, clients(name))").order("created_at", { ascending: false })).data ?? [],
   });
-  const update = async (id: string, patch: Record<string, string>) => {
+  const update = async (id: string, patch: { status?: string; solution?: string; final_comment?: string }) => {
     const { error } = await supabase.from("complaints").update(patch).eq("id", id);
     if (error) toast.error(error.message); else refetch();
   };
