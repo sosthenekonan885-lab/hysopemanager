@@ -17,7 +17,7 @@ export async function periodStats(from: string, to: string) {
   const sum = (a: { amount: number }[]) => a.reduce((s, x) => s + x.amount, 0);
   const cashIn = p.filter((x) => x.method === "especes" && (x.context !== "livraison" || x.cash_confirmed_at));
   const cfg = Object.fromEntries((settings.data ?? []).map((s) => [s.key, s.value]));
-  const opening = Number(isWeekend(from) ? cfg.fonds_weekend : cfg.fonds_semaine) || 0;
+  const opening = Number(isWeekend(from) ? cfg['fonds_weekend'] : cfg['fonds_semaine']) || 0;
   const expenses = exps.data ?? [];
   const movements = mvs.data ?? [];
   const o = (orders.data ?? []).filter((x) => x.status !== "annule");
