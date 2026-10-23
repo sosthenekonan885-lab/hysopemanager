@@ -34,7 +34,7 @@ function Deliveries() {
           {data.cash.map((p) => (
             <div key={p.id} className="flex items-center justify-between py-1 text-sm">
               <span>{orderNo(p.orders?.number)} · {p.deliverer} · {fcfa(p.amount)}</span>
-              <Button size="sm" onClick={async () => { const { error } = await supabase.from("payments").update({ cash_confirmed_by: me?.id, cash_confirmed_at: new Date().toISOString() }).eq("id", p.id); if (error) toast.error(error.message); else { toast.success("Espèces remises"); refetch(); } }}>Espèces remises</Button>
+              <Button size="sm" onClick={async () => { const { error } = await supabase.from("payments").update({ cash_confirmed_by: (me?.id ?? null), cash_confirmed_at: new Date().toISOString() }).eq("id", p.id); if (error) toast.error(error.message); else { toast.success("Espèces remises"); refetch(); } }}>Espèces remises</Button>
             </div>
           ))}
         </div>
