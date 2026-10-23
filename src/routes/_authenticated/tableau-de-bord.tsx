@@ -23,7 +23,7 @@ function Dashboard() {
         supabase.from("orders").select("status").in("status", ["en_cours", "pret", "a_livrer"]),
       ]);
       const c = { en_cours: 0, pret: 0, a_livrer: 0 } as Record<string, number>;
-      (counts.data ?? []).forEach((x) => (c[x.status] += 1));
+      (counts.data ?? []).forEach((x) => (c[x.status] = (c[x.status] ?? 0) + 1));
       return { due: due.data ?? [], c };
     },
   });
@@ -33,8 +33,8 @@ function Dashboard() {
       <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Encaissé aujourd'hui" value={fcfa(s?.revenue)} accent hint={`Espèces ${fcfa(s?.especes)} · Wave ${fcfa(s?.wave)} · OM ${fcfa(s?.om)}`} />
         <Stat label="Dépôts du jour" value={s?.orders ?? 0} hint={fcfa(s?.ordersValue)} />
-        <Stat label="En traitement" value={o?.c.en_cours ?? 0} />
-        <Stat label="Prêts / à livrer" value={`${o?.c.pret ?? 0} / ${o?.c.a_livrer ?? 0}`} />
+        <Stat label="En traitement" value={o?.c['en_cours'] ?? 0} />
+        <Stat label="Prêts / à livrer" value={`${o?.c['pret'] ?? 0} / ${o?.c['a_livrer'] ?? 0}`} />
       </div>
       <h2 className="mb-3 text-xl font-bold">Retraits prévus jusqu'à aujourd'hui</h2>
       <div className="space-y-2">

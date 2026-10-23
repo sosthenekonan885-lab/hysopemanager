@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/rapports")({
 
 const PERIODS = { jour: "Journalier", semaine: "Hebdomadaire", mois: "Mensuel", annee: "Fin d'année" } as const;
 
-function range(p: keyof typeof PERIODS) {
+function range(p: keyof typeof PERIODS): [string, string] {
   const t = todayISO(); const d = new Date(t + "T12:00:00");
   if (p === "jour") return [t, t];
   if (p === "semaine") { const s = new Date(d); s.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return [s.toISOString().slice(0, 10), t]; }
