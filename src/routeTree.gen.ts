@@ -12,10 +12,20 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as SuiviRouteImport } from './routes/suivi'
+import { Route as AuthenticatedCaisseRouteImport } from './routes/_authenticated/caisse'
 import { Route as AuthenticatedCasiersRouteImport } from './routes/_authenticated/casiers'
+import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
+import { Route as AuthenticatedDepensesRouteImport } from './routes/_authenticated/depenses'
+import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated/historique'
 import { Route as AuthenticatedLivraisonsRouteImport } from './routes/_authenticated/livraisons'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
+import { Route as AuthenticatedParametresRouteImport } from './routes/_authenticated/parametres'
+import { Route as AuthenticatedRapportsRouteImport } from './routes/_authenticated/rapports'
 import { Route as AuthenticatedReclamationsRouteImport } from './routes/_authenticated/reclamations'
 import { Route as AuthenticatedRetraitsRouteImport } from './routes/_authenticated/retraits'
+import { Route as AuthenticatedTableauDeBordRouteImport } from './routes/_authenticated/tableau-de-bord'
+import { Route as AuthenticatedTarifsRouteImport } from './routes/_authenticated/tarifs'
+import { Route as AuthenticatedUtilisateursRouteImport } from './routes/_authenticated/utilisateurs'
 import { Route as AuthenticatedClientsIndexRouteImport } from './routes/_authenticated/clients.index'
 import { Route as AuthenticatedClientsIdRouteImport } from './routes/_authenticated/clients.$id'
 import { Route as AuthenticatedCommandesIndexRouteImport } from './routes/_authenticated/commandes.index'
@@ -36,14 +46,50 @@ const SuiviRoute = SuiviRouteImport.update({
   path: '/suivi',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedCaisseRoute = AuthenticatedCaisseRouteImport.update({
+  id: '/caisse',
+  path: '/caisse',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCasiersRoute = AuthenticatedCasiersRouteImport.update({
   id: '/casiers',
   path: '/casiers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCompteRoute = AuthenticatedCompteRouteImport.update({
+  id: '/compte',
+  path: '/compte',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDepensesRoute = AuthenticatedDepensesRouteImport.update({
+  id: '/depenses',
+  path: '/depenses',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedHistoriqueRoute = AuthenticatedHistoriqueRouteImport.update({
+  id: '/historique',
+  path: '/historique',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedLivraisonsRoute = AuthenticatedLivraisonsRouteImport.update({
   id: '/livraisons',
   path: '/livraisons',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedParametresRoute = AuthenticatedParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRapportsRoute = AuthenticatedRapportsRouteImport.update({
+  id: '/rapports',
+  path: '/rapports',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedReclamationsRoute =
@@ -57,6 +103,23 @@ const AuthenticatedRetraitsRoute = AuthenticatedRetraitsRouteImport.update({
   path: '/retraits',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTableauDeBordRoute =
+  AuthenticatedTableauDeBordRouteImport.update({
+    id: '/tableau-de-bord',
+    path: '/tableau-de-bord',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedTarifsRoute = AuthenticatedTarifsRouteImport.update({
+  id: '/tarifs',
+  path: '/tarifs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUtilisateursRoute =
+  AuthenticatedUtilisateursRouteImport.update({
+    id: '/utilisateurs',
+    path: '/utilisateurs',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedClientsIndexRoute =
   AuthenticatedClientsIndexRouteImport.update({
     id: '/clients/',
@@ -90,10 +153,20 @@ const AuthenticatedCommandesNouvelleRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/suivi': typeof SuiviRoute
+  '/caisse': typeof AuthenticatedCaisseRoute
   '/casiers': typeof AuthenticatedCasiersRoute
+  '/compte': typeof AuthenticatedCompteRoute
+  '/depenses': typeof AuthenticatedDepensesRoute
+  '/historique': typeof AuthenticatedHistoriqueRoute
   '/livraisons': typeof AuthenticatedLivraisonsRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/parametres': typeof AuthenticatedParametresRoute
+  '/rapports': typeof AuthenticatedRapportsRoute
   '/reclamations': typeof AuthenticatedReclamationsRoute
   '/retraits': typeof AuthenticatedRetraitsRoute
+  '/tableau-de-bord': typeof AuthenticatedTableauDeBordRoute
+  '/tarifs': typeof AuthenticatedTarifsRoute
+  '/utilisateurs': typeof AuthenticatedUtilisateursRoute
   '/clients/$id': typeof AuthenticatedClientsIdRoute
   '/commandes/$id': typeof AuthenticatedCommandesIdRoute
   '/commandes/nouvelle': typeof AuthenticatedCommandesNouvelleRoute
@@ -103,10 +176,20 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/suivi': typeof SuiviRoute
+  '/caisse': typeof AuthenticatedCaisseRoute
   '/casiers': typeof AuthenticatedCasiersRoute
+  '/compte': typeof AuthenticatedCompteRoute
+  '/depenses': typeof AuthenticatedDepensesRoute
+  '/historique': typeof AuthenticatedHistoriqueRoute
   '/livraisons': typeof AuthenticatedLivraisonsRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/parametres': typeof AuthenticatedParametresRoute
+  '/rapports': typeof AuthenticatedRapportsRoute
   '/reclamations': typeof AuthenticatedReclamationsRoute
   '/retraits': typeof AuthenticatedRetraitsRoute
+  '/tableau-de-bord': typeof AuthenticatedTableauDeBordRoute
+  '/tarifs': typeof AuthenticatedTarifsRoute
+  '/utilisateurs': typeof AuthenticatedUtilisateursRoute
   '/clients/$id': typeof AuthenticatedClientsIdRoute
   '/commandes/$id': typeof AuthenticatedCommandesIdRoute
   '/commandes/nouvelle': typeof AuthenticatedCommandesNouvelleRoute
@@ -118,10 +201,20 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/suivi': typeof SuiviRoute
+  '/_authenticated/caisse': typeof AuthenticatedCaisseRoute
   '/_authenticated/casiers': typeof AuthenticatedCasiersRoute
+  '/_authenticated/compte': typeof AuthenticatedCompteRoute
+  '/_authenticated/depenses': typeof AuthenticatedDepensesRoute
+  '/_authenticated/historique': typeof AuthenticatedHistoriqueRoute
   '/_authenticated/livraisons': typeof AuthenticatedLivraisonsRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
+  '/_authenticated/parametres': typeof AuthenticatedParametresRoute
+  '/_authenticated/rapports': typeof AuthenticatedRapportsRoute
   '/_authenticated/reclamations': typeof AuthenticatedReclamationsRoute
   '/_authenticated/retraits': typeof AuthenticatedRetraitsRoute
+  '/_authenticated/tableau-de-bord': typeof AuthenticatedTableauDeBordRoute
+  '/_authenticated/tarifs': typeof AuthenticatedTarifsRoute
+  '/_authenticated/utilisateurs': typeof AuthenticatedUtilisateursRoute
   '/_authenticated/clients/$id': typeof AuthenticatedClientsIdRoute
   '/_authenticated/commandes/$id': typeof AuthenticatedCommandesIdRoute
   '/_authenticated/commandes/nouvelle': typeof AuthenticatedCommandesNouvelleRoute
@@ -133,10 +226,20 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/suivi'
+    | '/caisse'
     | '/casiers'
+    | '/compte'
+    | '/depenses'
+    | '/historique'
     | '/livraisons'
+    | '/notifications'
+    | '/parametres'
+    | '/rapports'
     | '/reclamations'
     | '/retraits'
+    | '/tableau-de-bord'
+    | '/tarifs'
+    | '/utilisateurs'
     | '/clients/$id'
     | '/commandes/$id'
     | '/commandes/nouvelle'
@@ -146,10 +249,20 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/suivi'
+    | '/caisse'
     | '/casiers'
+    | '/compte'
+    | '/depenses'
+    | '/historique'
     | '/livraisons'
+    | '/notifications'
+    | '/parametres'
+    | '/rapports'
     | '/reclamations'
     | '/retraits'
+    | '/tableau-de-bord'
+    | '/tarifs'
+    | '/utilisateurs'
     | '/clients/$id'
     | '/commandes/$id'
     | '/commandes/nouvelle'
@@ -160,10 +273,20 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/suivi'
+    | '/_authenticated/caisse'
     | '/_authenticated/casiers'
+    | '/_authenticated/compte'
+    | '/_authenticated/depenses'
+    | '/_authenticated/historique'
     | '/_authenticated/livraisons'
+    | '/_authenticated/notifications'
+    | '/_authenticated/parametres'
+    | '/_authenticated/rapports'
     | '/_authenticated/reclamations'
     | '/_authenticated/retraits'
+    | '/_authenticated/tableau-de-bord'
+    | '/_authenticated/tarifs'
+    | '/_authenticated/utilisateurs'
     | '/_authenticated/clients/$id'
     | '/_authenticated/commandes/$id'
     | '/_authenticated/commandes/nouvelle'
@@ -200,6 +323,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuiviRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/caisse': {
+      id: '/_authenticated/caisse'
+      path: '/caisse'
+      fullPath: '/caisse'
+      preLoaderRoute: typeof AuthenticatedCaisseRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/casiers': {
       id: '/_authenticated/casiers'
       path: '/casiers'
@@ -207,11 +337,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCasiersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/compte': {
+      id: '/_authenticated/compte'
+      path: '/compte'
+      fullPath: '/compte'
+      preLoaderRoute: typeof AuthenticatedCompteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/depenses': {
+      id: '/_authenticated/depenses'
+      path: '/depenses'
+      fullPath: '/depenses'
+      preLoaderRoute: typeof AuthenticatedDepensesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/historique': {
+      id: '/_authenticated/historique'
+      path: '/historique'
+      fullPath: '/historique'
+      preLoaderRoute: typeof AuthenticatedHistoriqueRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/livraisons': {
       id: '/_authenticated/livraisons'
       path: '/livraisons'
       fullPath: '/livraisons'
       preLoaderRoute: typeof AuthenticatedLivraisonsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/parametres': {
+      id: '/_authenticated/parametres'
+      path: '/parametres'
+      fullPath: '/parametres'
+      preLoaderRoute: typeof AuthenticatedParametresRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rapports': {
+      id: '/_authenticated/rapports'
+      path: '/rapports'
+      fullPath: '/rapports'
+      preLoaderRoute: typeof AuthenticatedRapportsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/reclamations': {
@@ -226,6 +398,27 @@ declare module '@tanstack/react-router' {
       path: '/retraits'
       fullPath: '/retraits'
       preLoaderRoute: typeof AuthenticatedRetraitsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/tableau-de-bord': {
+      id: '/_authenticated/tableau-de-bord'
+      path: '/tableau-de-bord'
+      fullPath: '/tableau-de-bord'
+      preLoaderRoute: typeof AuthenticatedTableauDeBordRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/tarifs': {
+      id: '/_authenticated/tarifs'
+      path: '/tarifs'
+      fullPath: '/tarifs'
+      preLoaderRoute: typeof AuthenticatedTarifsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/utilisateurs': {
+      id: '/_authenticated/utilisateurs'
+      path: '/utilisateurs'
+      fullPath: '/utilisateurs'
+      preLoaderRoute: typeof AuthenticatedUtilisateursRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/clients/': {
@@ -267,10 +460,20 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCaisseRoute: typeof AuthenticatedCaisseRoute
   AuthenticatedCasiersRoute: typeof AuthenticatedCasiersRoute
+  AuthenticatedCompteRoute: typeof AuthenticatedCompteRoute
+  AuthenticatedDepensesRoute: typeof AuthenticatedDepensesRoute
+  AuthenticatedHistoriqueRoute: typeof AuthenticatedHistoriqueRoute
   AuthenticatedLivraisonsRoute: typeof AuthenticatedLivraisonsRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
+  AuthenticatedParametresRoute: typeof AuthenticatedParametresRoute
+  AuthenticatedRapportsRoute: typeof AuthenticatedRapportsRoute
   AuthenticatedReclamationsRoute: typeof AuthenticatedReclamationsRoute
   AuthenticatedRetraitsRoute: typeof AuthenticatedRetraitsRoute
+  AuthenticatedTableauDeBordRoute: typeof AuthenticatedTableauDeBordRoute
+  AuthenticatedTarifsRoute: typeof AuthenticatedTarifsRoute
+  AuthenticatedUtilisateursRoute: typeof AuthenticatedUtilisateursRoute
   AuthenticatedClientsIdRoute: typeof AuthenticatedClientsIdRoute
   AuthenticatedCommandesIdRoute: typeof AuthenticatedCommandesIdRoute
   AuthenticatedCommandesNouvelleRoute: typeof AuthenticatedCommandesNouvelleRoute
@@ -279,10 +482,20 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCaisseRoute: AuthenticatedCaisseRoute,
   AuthenticatedCasiersRoute: AuthenticatedCasiersRoute,
+  AuthenticatedCompteRoute: AuthenticatedCompteRoute,
+  AuthenticatedDepensesRoute: AuthenticatedDepensesRoute,
+  AuthenticatedHistoriqueRoute: AuthenticatedHistoriqueRoute,
   AuthenticatedLivraisonsRoute: AuthenticatedLivraisonsRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
+  AuthenticatedParametresRoute: AuthenticatedParametresRoute,
+  AuthenticatedRapportsRoute: AuthenticatedRapportsRoute,
   AuthenticatedReclamationsRoute: AuthenticatedReclamationsRoute,
   AuthenticatedRetraitsRoute: AuthenticatedRetraitsRoute,
+  AuthenticatedTableauDeBordRoute: AuthenticatedTableauDeBordRoute,
+  AuthenticatedTarifsRoute: AuthenticatedTarifsRoute,
+  AuthenticatedUtilisateursRoute: AuthenticatedUtilisateursRoute,
   AuthenticatedClientsIdRoute: AuthenticatedClientsIdRoute,
   AuthenticatedCommandesIdRoute: AuthenticatedCommandesIdRoute,
   AuthenticatedCommandesNouvelleRoute: AuthenticatedCommandesNouvelleRoute,
