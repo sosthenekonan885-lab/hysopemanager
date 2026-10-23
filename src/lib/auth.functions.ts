@@ -57,7 +57,7 @@ async function createAccount(input: z.infer<typeof userInput>, role: "admin" | "
   if (error || !data.user) throw new Error(error?.message.includes("already") ? "Identifiant déjà utilisé" : error?.message ?? "Erreur");
   const uid = data.user.id;
   const { error: pe } = await db.from("profiles").insert({
-    id: uid, username: input.username.toLowerCase(), full_name: input.full_name, agency_id: agency?.id,
+    id: uid, username: input.username.toLowerCase(), full_name: input.full_name, agency_id: agency?.id ?? null,
   });
   if (pe) { await db.auth.admin.deleteUser(uid); throw new Error("Identifiant déjà utilisé"); }
   await db.from("user_roles").insert({ user_id: uid, role });
