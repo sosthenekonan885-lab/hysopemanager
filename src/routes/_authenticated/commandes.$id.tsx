@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
@@ -94,7 +93,7 @@ function OrderPage() {
       status: o.delivery_mode === "livraison" ? "a_livrer" : "pret", ready_at: new Date().toISOString(),
     };
     if (storage === "casier") {
-      if (!locker) return toast.error("Choisissez un casier");
+      if (!locker) return void toast.error("Choisissez un casier");
       patch.locker_code = locker;
     } else {
       const { data: code } = await supabase.rpc("next_bag_code");
@@ -129,11 +128,11 @@ function OrderPage() {
       if (r.kind === "reduction") {
         const disc = r.amount ?? Math.round(((o.total ?? 0) * Number(r.percent ?? 0)) / 100);
         const { error } = await supabase.from("orders").update({ discount: disc }).eq("id", id);
-        if (error) return toast.error(error.message);
+        if (error) return void toast.error(error.message);
         await supabase.from("order_requests").update({ status: "approuvee", decided_by: (me?.id ?? null), decided_at: new Date().toISOString(), final_total: (o.total ?? 0) - disc }).eq("id", r.id);
       } else {
         const { error } = await supabase.from("orders").update({ status: "annule", cancel_reason: r.reason, locker_code: null }).eq("id", id);
-        if (error) return toast.error(error.message);
+        if (error) return void toast.error(error.message);
         await supabase.from("order_requests").update({ status: "approuvee", decided_by: (me?.id ?? null), decided_at: new Date().toISOString() }).eq("id", r.id);
       }
     } else {
@@ -224,7 +223,7 @@ function OrderPage() {
                 <div className="grid gap-4 border-t pt-3 md:grid-cols-2">
                   <form className="space-y-2" onSubmit={async (e) => {
                     e.preventDefault();
-                    if (req.kind === "annulation" && !req.reason.trim()) return toast.error("Motif obligatoire");
+                    if (req.kind === "annulation" && !req.reason.trim()) return void toast.error("Motif obligatoire");
                     await run(() => supabase.from("order_requests").insert({ order_id: id, kind: req.kind, amount: req.amount || null, percent: req.percent || null, reason: req.reason, initial_total: o.total }), "Demande envoyée aux administrateurs");
                   }}>
                     <Label>Demande à un administrateur</Label>
@@ -237,7 +236,7 @@ function OrderPage() {
                   </form>
                   <form className="space-y-2" onSubmit={async (e) => {
                     e.preventDefault();
-                    await run(() => supabase.from("complaints").insert({ order_id: id, ...comp }), "Réclamation enregistrée");
+                    await run(() => supabase.from("complaints").insert({ order_id: id, ...comp, type: comp.type ?? "autre" }), "Réclamation enregistrée");
                     setComp({ ...comp, item: "", description: "" });
                   }}>
                     <Label>Nouvelle réclamation</Label>
@@ -312,7 +311,7 @@ function OrderPage() {
               <CardContent className="space-y-3">
                 <Input type="number" value={payAmt} onChange={(e) => setPayAmt(+e.target.value)} />
                 <MethodPicker value={payMethod} onChange={setPayMethod} />
-                <Button className="w-full" variant="secondary" onClick={async () => { if (payAmt > balance) return toast.error("Montant supérieur au solde"); if (await addPayment("depot", payAmt)) { toast.success("Paiement enregistré"); setPayAmt(0); refresh(); } }}>Enregistrer</Button>
+                <Button className="w-full" variant="secondary" onClick={async () => { if (payAmt > balance) return void toast.error("Montant supérieur au solde"); if (await addPayment("depot", payAmt)) { toast.success("Paiement enregistré"); setPayAmt(0); refresh(); } }}>Enregistrer</Button>
               </CardContent>
             </Card>
           )}

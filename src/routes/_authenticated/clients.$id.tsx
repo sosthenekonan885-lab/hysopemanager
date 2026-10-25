@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -39,7 +38,7 @@ function ClientPage() {
   const spent = valid.reduce((s, o) => s + (o.paid ?? 0), 0);
 
   async function save() {
-    const { error } = await supabase.from("clients").update(edit!).eq("id", id);
+    const { error } = await supabase.from("clients").update(edit as never).eq("id", id);
     if (error) toast.error(error.message); else { toast.success("Fiche mise à jour"); setEdit(null); refetch(); }
   }
 

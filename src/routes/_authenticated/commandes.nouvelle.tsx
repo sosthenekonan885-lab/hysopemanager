@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
@@ -66,11 +65,11 @@ function NewOrder() {
   const upd = (key: number, patch: Partial<Line>) => setLines((ls) => ls.map((l) => (l.key === key ? { ...l, ...patch } : l)));
 
   async function save() {
-    if (!clientId && !newClient) return toast.error("Choisissez ou créez un client");
-    if (!lines.length) return toast.error("Ajoutez au moins un vêtement");
-    if (lines.some((l) => l.unit_price <= 0)) return toast.error("Indiquez le prix des articles « selon la taille »");
+    if (!clientId && !newClient) return void toast.error("Choisissez ou créez un client");
+    if (!lines.length) return void toast.error("Ajoutez au moins un vêtement");
+    if (lines.some((l) => l.unit_price <= 0)) return void toast.error("Indiquez le prix des articles « selon la taille »");
     const paid = payOpt === "integral" ? total : payOpt === "avance" ? advance : 0;
-    if (payOpt === "avance" && (advance <= 0 || advance >= total)) return toast.error("L'avance doit être comprise entre 0 et le total");
+    if (payOpt === "avance" && (advance <= 0 || advance >= total)) return void toast.error("L'avance doit être comprise entre 0 et le total");
     setBusy(true);
     try {
       let cid = clientId;

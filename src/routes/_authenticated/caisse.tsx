@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -87,7 +86,7 @@ function Caisse() {
                 <p>Écart : <b className={gap ? "text-destructive" : "text-success"}>{fcfa(gap)}</b></p>
                 {gap !== 0 && <Input placeholder="Motif de l'écart (obligatoire)" value={reason} onChange={(e) => setReason(e.target.value)} />}
                 <Button className="w-full" onClick={async () => {
-                  if (gap !== 0 && !reason.trim()) return toast.error("Le motif est obligatoire en cas d'écart");
+                  if (gap !== 0 && !reason.trim()) return void toast.error("Le motif est obligatoire en cas d'écart");
                   const { error } = await supabase.from("cash_closings").insert({ date: day, opening: s!.opening, theoretical: s!.theoretical, counted, gap, reason: reason || null });
                   if (error) toast.error(error.message); else { toast.success("Journée clôturée"); refetch(); }
                 }}>Clôturer la journée</Button>

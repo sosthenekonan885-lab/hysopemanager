@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -22,7 +21,7 @@ function Account() {
       <PageHeader title="Mon compte" subtitle={`${me?.profile?.full_name ?? ""} · @${me?.profile?.username ?? ""}`} />
       <form className="space-y-3" onSubmit={async (e) => {
         e.preventDefault();
-        if (f.next !== f.confirm) return toast.error("Les mots de passe ne correspondent pas");
+        if (f.next !== f.confirm) return void toast.error("Les mots de passe ne correspondent pas");
         try { await changeOwnPassword({ data: { current: f.current, next: f.next } }); toast.success("Mot de passe modifié"); setF({ current: "", next: "", confirm: "" }); }
         catch (err) { toast.error(err instanceof Error ? err.message : "Erreur"); }
       }}>
