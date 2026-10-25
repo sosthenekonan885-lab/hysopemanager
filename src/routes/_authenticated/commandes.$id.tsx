@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { COMPLAINT_TYPES, LOCKERS, METHOD_LABEL, dateFr, dateTimeFr, fcfa, orderNo, paymentStatus, type PayMethod } from "@/lib/format";
 import { useMe } from "@/hooks/use-me";
 import { cn } from "@/lib/utils";
+import logoAsset from "@/assets/logo-hysope.jpg.asset.json";
 
 export const Route = createFileRoute("/_authenticated/commandes/$id")({
   validateSearch: z.object({ print: z.boolean().optional() }),
@@ -335,7 +336,8 @@ function OrderPage() {
 
       {/* Reçu ½ A4 */}
       <div className="print-area hidden print:block">
-        <div style={{ height: "138mm" }} className="border p-5 text-[11px] text-foreground">
+        <div style={{ height: "138mm" }} className="relative isolate overflow-hidden border p-5 text-[11px] text-foreground">
+          <img src={logoAsset.url} alt="" aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[95mm] w-[95mm] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover" style={{ opacity: 0.1, filter: "grayscale(1) sepia(1) hue-rotate(180deg) saturate(2.5) brightness(1.3)", WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }} />
           <div className="flex justify-between">
             <div><div className="font-display text-xl font-bold">Pressing L'Hysope</div><div>Yopougon Ananeraie</div><div>Tél. : 07 08 52 11 44 / 05 45 51 92 36</div></div>
             <div className="text-right"><div className="text-lg font-bold">{orderNo(o.number)}</div><div>Date : {dateFr(o.created_at)}</div><div>Retrait prévu : <b>{dateFr(o.pickup_date)}</b></div></div>

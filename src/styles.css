@@ -71,18 +71,18 @@
 
 :root {
   --radius: 0.75rem;
-  --background: oklch(0.975 0.012 95);
-  --foreground: oklch(0.24 0.035 165);
-  --card: oklch(0.995 0.005 95);
-  --card-foreground: oklch(0.24 0.035 165);
-  --popover: oklch(0.995 0.005 95);
-  --popover-foreground: oklch(0.24 0.035 165);
-  --primary: oklch(0.42 0.075 165);
+  --background: oklch(0.975 0.01 240);
+  --foreground: oklch(0.24 0.035 245);
+  --card: oklch(0.995 0.004 240);
+  --card-foreground: oklch(0.24 0.035 245);
+  --popover: oklch(0.995 0.004 240);
+  --popover-foreground: oklch(0.24 0.035 245);
+  --primary: oklch(0.42 0.075 245);
   --primary-foreground: oklch(0.98 0.01 95);
-  --secondary: oklch(0.93 0.025 120);
-  --secondary-foreground: oklch(0.28 0.05 165);
-  --muted: oklch(0.945 0.012 100);
-  --muted-foreground: oklch(0.5 0.025 160);
+  --secondary: oklch(0.93 0.03 235);
+  --secondary-foreground: oklch(0.28 0.05 245);
+  --muted: oklch(0.945 0.012 240);
+  --muted-foreground: oklch(0.5 0.03 245);
   --accent: oklch(0.8 0.12 80);
   --accent-foreground: oklch(0.25 0.04 70);
   --destructive: oklch(0.56 0.2 28);
@@ -93,23 +93,23 @@
   --warning-foreground: oklch(0.28 0.05 70);
   --info: oklch(0.58 0.1 230);
   --info-foreground: oklch(0.98 0.01 95);
-  --border: oklch(0.89 0.018 110);
-  --input: oklch(0.89 0.018 110);
-  --ring: oklch(0.42 0.075 165);
-  --chart-1: oklch(0.42 0.075 165);
+  --border: oklch(0.89 0.02 240);
+  --input: oklch(0.89 0.02 240);
+  --ring: oklch(0.42 0.075 245);
+  --chart-1: oklch(0.42 0.075 245);
   --chart-2: oklch(0.78 0.14 75);
   --chart-3: oklch(0.58 0.1 230);
   --chart-4: oklch(0.6 0.13 155);
   --chart-5: oklch(0.56 0.2 28);
-  --sidebar: oklch(0.27 0.045 165);
+  --sidebar: oklch(0.27 0.045 245);
   --sidebar-foreground: oklch(0.92 0.02 100);
   --sidebar-primary: oklch(0.8 0.12 80);
   --sidebar-primary-foreground: oklch(0.22 0.04 70);
-  --sidebar-accent: oklch(0.33 0.05 165);
+  --sidebar-accent: oklch(0.33 0.05 245);
   --sidebar-accent-foreground: oklch(0.98 0.01 95);
-  --sidebar-border: oklch(0.34 0.04 165);
+  --sidebar-border: oklch(0.34 0.04 245);
   --sidebar-ring: oklch(0.8 0.12 80);
-  --gradient-brand: linear-gradient(135deg, oklch(0.36 0.07 165), oklch(0.5 0.08 150));
+  --gradient-brand: linear-gradient(135deg, oklch(0.36 0.07 245), oklch(0.5 0.08 235));
   --shadow-soft: 0 10px 30px -14px color-mix(in oklab, var(--primary) 35%, transparent);
 }
 
