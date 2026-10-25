@@ -236,7 +236,7 @@ function OrderPage() {
                   </form>
                   <form className="space-y-2" onSubmit={async (e) => {
                     e.preventDefault();
-                    await run(() => supabase.from("complaints").insert({ order_id: id, ...comp }), "Réclamation enregistrée");
+                    await run(() => supabase.from("complaints").insert({ order_id: id, ...comp, type: comp.type ?? "autre" }), "Réclamation enregistrée");
                     setComp({ ...comp, item: "", description: "" });
                   }}>
                     <Label>Nouvelle réclamation</Label>
