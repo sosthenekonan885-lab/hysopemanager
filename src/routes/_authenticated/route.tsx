@@ -26,7 +26,7 @@ const NAV = [
   { to: "/commandes", label: "Commandes", icon: ShoppingBag },
   { to: "/clients", label: "Clients", icon: Users },
   { to: "/casiers", label: "Casiers & sacs", icon: Archive },
-  { to: "/retraits", label: "Journal des retraits", icon: PackageCheck },
+  { to: "/retraits", label: "Retraits", icon: PackageCheck },
   { to: "/livraisons", label: "Livraisons", icon: Truck },
   { to: "/reclamations", label: "Réclamations", icon: MessageSquareWarning },
   { to: "/caisse", label: "Caisse", icon: Wallet },

@@ -30,6 +30,7 @@ import { Route as AuthenticatedClientsIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedClientsIdRouteImport } from './routes/_authenticated/clients.$id'
 import { Route as AuthenticatedCommandesIndexRouteImport } from './routes/_authenticated/commandes.index'
 import { Route as AuthenticatedCommandesIdRouteImport } from './routes/_authenticated/commandes.$id'
+import { Route as AuthenticatedCommandesAncienneRouteImport } from './routes/_authenticated/commandes.ancienne'
 import { Route as AuthenticatedCommandesNouvelleRouteImport } from './routes/_authenticated/commandes.nouvelle'
 
 const IndexRoute = IndexRouteImport.update({
@@ -143,6 +144,12 @@ const AuthenticatedCommandesIdRoute =
     path: '/commandes/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedCommandesAncienneRoute =
+  AuthenticatedCommandesAncienneRouteImport.update({
+    id: '/commandes/ancienne',
+    path: '/commandes/ancienne',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedCommandesNouvelleRoute =
   AuthenticatedCommandesNouvelleRouteImport.update({
     id: '/commandes/nouvelle',
@@ -169,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/utilisateurs': typeof AuthenticatedUtilisateursRoute
   '/clients/$id': typeof AuthenticatedClientsIdRoute
   '/commandes/$id': typeof AuthenticatedCommandesIdRoute
+  '/commandes/ancienne': typeof AuthenticatedCommandesAncienneRoute
   '/commandes/nouvelle': typeof AuthenticatedCommandesNouvelleRoute
   '/clients/': typeof AuthenticatedClientsIndexRoute
   '/commandes/': typeof AuthenticatedCommandesIndexRoute
@@ -192,6 +200,7 @@ export interface FileRoutesByTo {
   '/utilisateurs': typeof AuthenticatedUtilisateursRoute
   '/clients/$id': typeof AuthenticatedClientsIdRoute
   '/commandes/$id': typeof AuthenticatedCommandesIdRoute
+  '/commandes/ancienne': typeof AuthenticatedCommandesAncienneRoute
   '/commandes/nouvelle': typeof AuthenticatedCommandesNouvelleRoute
   '/clients': typeof AuthenticatedClientsIndexRoute
   '/commandes': typeof AuthenticatedCommandesIndexRoute
@@ -217,6 +226,7 @@ export interface FileRoutesById {
   '/_authenticated/utilisateurs': typeof AuthenticatedUtilisateursRoute
   '/_authenticated/clients/$id': typeof AuthenticatedClientsIdRoute
   '/_authenticated/commandes/$id': typeof AuthenticatedCommandesIdRoute
+  '/_authenticated/commandes/ancienne': typeof AuthenticatedCommandesAncienneRoute
   '/_authenticated/commandes/nouvelle': typeof AuthenticatedCommandesNouvelleRoute
   '/_authenticated/clients/': typeof AuthenticatedClientsIndexRoute
   '/_authenticated/commandes/': typeof AuthenticatedCommandesIndexRoute
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/utilisateurs'
     | '/clients/$id'
     | '/commandes/$id'
+    | '/commandes/ancienne'
     | '/commandes/nouvelle'
     | '/clients/'
     | '/commandes/'
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '/utilisateurs'
     | '/clients/$id'
     | '/commandes/$id'
+    | '/commandes/ancienne'
     | '/commandes/nouvelle'
     | '/clients'
     | '/commandes'
@@ -289,6 +301,7 @@ export interface FileRouteTypes {
     | '/_authenticated/utilisateurs'
     | '/_authenticated/clients/$id'
     | '/_authenticated/commandes/$id'
+    | '/_authenticated/commandes/ancienne'
     | '/_authenticated/commandes/nouvelle'
     | '/_authenticated/clients/'
     | '/_authenticated/commandes/'
@@ -449,6 +462,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCommandesIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/commandes/ancienne': {
+      id: '/_authenticated/commandes/ancienne'
+      path: '/commandes/ancienne'
+      fullPath: '/commandes/ancienne'
+      preLoaderRoute: typeof AuthenticatedCommandesAncienneRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/commandes/nouvelle': {
       id: '/_authenticated/commandes/nouvelle'
       path: '/commandes/nouvelle'
@@ -476,6 +496,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedUtilisateursRoute: typeof AuthenticatedUtilisateursRoute
   AuthenticatedClientsIdRoute: typeof AuthenticatedClientsIdRoute
   AuthenticatedCommandesIdRoute: typeof AuthenticatedCommandesIdRoute
+  AuthenticatedCommandesAncienneRoute: typeof AuthenticatedCommandesAncienneRoute
   AuthenticatedCommandesNouvelleRoute: typeof AuthenticatedCommandesNouvelleRoute
   AuthenticatedClientsIndexRoute: typeof AuthenticatedClientsIndexRoute
   AuthenticatedCommandesIndexRoute: typeof AuthenticatedCommandesIndexRoute
@@ -498,6 +519,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedUtilisateursRoute: AuthenticatedUtilisateursRoute,
   AuthenticatedClientsIdRoute: AuthenticatedClientsIdRoute,
   AuthenticatedCommandesIdRoute: AuthenticatedCommandesIdRoute,
+  AuthenticatedCommandesAncienneRoute: AuthenticatedCommandesAncienneRoute,
   AuthenticatedCommandesNouvelleRoute: AuthenticatedCommandesNouvelleRoute,
   AuthenticatedClientsIndexRoute: AuthenticatedClientsIndexRoute,
   AuthenticatedCommandesIndexRoute: AuthenticatedCommandesIndexRoute,

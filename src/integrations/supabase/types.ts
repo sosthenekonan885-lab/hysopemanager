@@ -332,6 +332,7 @@ export type Database = {
           observation: string | null
           order_id: string
           quantity: number
+          ready: boolean
           service_id: string | null
           unit_price: number
         }
@@ -342,6 +343,7 @@ export type Database = {
           observation?: string | null
           order_id: string
           quantity?: number
+          ready?: boolean
           service_id?: string | null
           unit_price: number
         }
@@ -352,6 +354,7 @@ export type Database = {
           observation?: string | null
           order_id?: string
           quantity?: number
+          ready?: boolean
           service_id?: string | null
           unit_price?: number
         }
@@ -455,6 +458,7 @@ export type Database = {
           delivery_mode: string
           discount: number
           id: string
+          legacy: boolean
           locker_code: string | null
           number: number
           pickup_date: string | null
@@ -477,6 +481,7 @@ export type Database = {
           delivery_mode?: string
           discount?: number
           id?: string
+          legacy?: boolean
           locker_code?: string | null
           number?: number
           pickup_date?: string | null
@@ -499,6 +504,7 @@ export type Database = {
           delivery_mode?: string
           discount?: number
           id?: string
+          legacy?: boolean
           locker_code?: string | null
           number?: number
           pickup_date?: string | null
@@ -750,6 +756,60 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      withdrawals: {
+        Row: {
+          amount: number
+          client_name: string
+          created_at: string
+          created_by: string | null
+          date: string
+          id: string
+          order_id: string | null
+          receipt_no: number
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          amount?: number
+          client_name: string
+          created_at?: string
+          created_by?: string | null
+          date?: string
+          id?: string
+          order_id?: string | null
+          receipt_no: number
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          amount?: number
+          client_name?: string
+          created_at?: string
+          created_by?: string | null
+          date?: string
+          id?: string
+          order_id?: string | null
+          receipt_no?: number
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "withdrawals_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "order_summary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "withdrawals_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

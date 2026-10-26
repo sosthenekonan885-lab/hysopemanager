@@ -132,8 +132,9 @@ export const manageUser = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z.object({
       userId: z.string().uuid(),
-      action: z.enum(["unlock", "deactivate", "activate", "reset_password"]),
+      action: z.enum(["unlock", "deactivate", "activate", "reset_password", "rename"]),
       password: z.string().min(6).max(72).optional(),
+      full_name: z.string().trim().min(2).max(80).optional(),
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -143,13 +144,18 @@ export const manageUser = createServerFn({ method: "POST" })
     if (data.action === "unlock") await db.from("profiles").update({ locked: false, failed_attempts: 0 }).eq("id", data.userId);
     if (data.action === "deactivate") await db.from("profiles").update({ active: false }).eq("id", data.userId);
     if (data.action === "activate") await db.from("profiles").update({ active: true }).eq("id", data.userId);
+    if (data.action === "rename") {
+      if (!data.full_name) throw new Error("Nom requis");
+      const { error } = await db.from("profiles").update({ full_name: data.full_name }).eq("id", data.userId);
+      if (error) throw new Error(error.message);
+    }
     if (data.action === "reset_password") {
       if (!data.password) throw new Error("Nouveau mot de passe requis");
       const { error } = await db.auth.admin.updateUserById(data.userId, { password: data.password });
       if (error) throw new Error(error.message);
       await db.from("profiles").update({ locked: false, failed_attempts: 0 }).eq("id", data.userId);
     }
-    await log(data.action === "reset_password" ? "reinitialisation_mdp" : `utilisateur_${data.action}`, context.userId, { target: data.userId });
+    await log(data.action === "reset_password" ? "reinitialisation_mdp" : `utilisateur_${data.action}`, context.userId, { target: data.userId, ...(data.full_name ? { full_name: data.full_name } : {}) });
     return { ok: true };
   });
 

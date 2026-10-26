@@ -23,10 +23,12 @@ function Users() {
       return (p.data ?? []).map((u) => ({ ...u, admin: (r.data ?? []).some((x) => x.user_id === u.id && x.role === "admin") }));
     },
   });
-  const act = async (userId: string, action: "unlock" | "deactivate" | "activate" | "reset_password") => {
+  const act = async (userId: string, action: "unlock" | "deactivate" | "activate" | "reset_password" | "rename", current?: string) => {
     let password: string | undefined;
+    let full_name: string | undefined;
+    if (action === "rename") { full_name = prompt("Nouveau nom affiché", current ?? "")?.trim() || undefined; if (!full_name) return; }
     if (action === "reset_password") { password = prompt("Nouveau mot de passe (6 caractères minimum)") ?? undefined; if (!password) return; }
-    try { await manageUser({ data: { userId, action, password } }); toast.success("Fait"); refetch(); } catch (e) { toast.error(e instanceof Error ? e.message : "Erreur"); }
+    try { await manageUser({ data: { userId, action, password, full_name } }); toast.success("Fait"); refetch(); } catch (e) { toast.error(e instanceof Error ? e.message : "Erreur"); }
   };
   return (
     <div>
@@ -53,6 +55,7 @@ function Users() {
             </div>
             <div className="flex gap-2">
               {u.locked && <Button size="sm" onClick={() => act(u.id, "unlock")}>Débloquer</Button>}
+              <Button size="sm" variant="outline" onClick={() => act(u.id, "rename", u.full_name)}>Modifier le nom</Button>
               <Button size="sm" variant="outline" onClick={() => act(u.id, "reset_password")}>Réinitialiser le mot de passe</Button>
               <Button size="sm" variant="ghost" onClick={() => act(u.id, u.active ? "deactivate" : "activate")}>{u.active ? "Désactiver" : "Réactiver"}</Button>
             </div>

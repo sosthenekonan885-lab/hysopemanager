@@ -30,7 +30,7 @@ function Suivi() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card px-6 py-4"><Link to="/"><Logo /></Link></header>
+      <header className="flex items-center justify-between gap-4 border-b bg-card px-6 py-4"><Link to="/"><Logo /></Link><Button asChild variant="outline"><Link to="/">Retour à la page de connexion</Link></Button></header>
       <main className="mx-auto max-w-lg space-y-6 p-6">
         <div>
           <h1 className="text-3xl font-bold">Suivre ma commande</h1>
