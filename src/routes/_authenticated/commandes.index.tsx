@@ -41,7 +41,7 @@ function Orders() {
 
   return (
     <div>
-      <PageHeader title="Commandes" subtitle="Recherchez par nom, téléphone ou numéro." actions={<Button asChild><Link to="/commandes/nouvelle">+ Nouveau dépôt</Link></Button>} />
+      <PageHeader title="Commandes" subtitle="Recherchez par nom, téléphone ou numéro." actions={<><Button asChild variant="outline"><Link to="/commandes/ancienne">+ Ancien reçu papier</Link></Button><Button asChild><Link to="/commandes/nouvelle">+ Nouveau dépôt</Link></Button></>} />
       <div className="mb-4 flex flex-wrap gap-2">
         <form className="flex flex-1 gap-2" onSubmit={(e) => { e.preventDefault(); navigate({ search: { ...search, q } }); }}>
           <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Rechercher…" className="max-w-sm" />
