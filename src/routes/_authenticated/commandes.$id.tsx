@@ -50,13 +50,13 @@ function OrderPage() {
         supabase.from("payments").select("*").eq("order_id", id).order("created_at"),
         supabase.from("order_requests").select("*").eq("order_id", id).order("requested_at", { ascending: false }),
         supabase.from("complaints").select("*").eq("order_id", id).order("created_at", { ascending: false }),
-        supabase.from("orders").select("locker_code").in("status", ["pret", "a_livrer"]).not("locker_code", "is", null),
+        supabase.from("orders").select("id,locker_code,order_items(quantity)").in("status", ["pret", "a_livrer"]).not("locker_code", "is", null),
         supabase.from("settings").select("*").eq("key", "livreur_defaut").maybeSingle(),
       ]);
       if (o.error) throw o.error;
       return {
         o: o.data, items: items.data ?? [], pays: pays.data ?? [], reqs: reqs.data ?? [], comps: comps.data ?? [],
-        used: new Set((occ.data ?? []).map((x) => x.locker_code)), defaultDeliverer: (settings.data?.value as string) ?? "",
+        used: (occ.data ?? []).filter((x) => x.id !== id).reduce((m, x) => m.set(x.locker_code!, (m.get(x.locker_code!) ?? 0) + Math.ceil(x.order_items.reduce((a, i) => a + i.quantity, 0) / 7)), new Map<string, number>()), defaultDeliverer: (settings.data?.value as string) ?? "",
       };
     },
   });
@@ -101,8 +101,17 @@ function OrderPage() {
       patch.bag_code = code as string;
     }
     if (o.delivery_mode === "livraison") patch.deliverer = data!.defaultDeliverer;
-    await run(() => supabase.from("orders").update(patch).eq("id", id), "Vêtements prêts");
+    const { error } = await supabase.from("orders").update(patch).eq("id", id);
+    if (error) return void toast.error(error.message);
+    await run(() => supabase.from("order_items").update({ ready: true }).eq("order_id", id).eq("ready", false), "Vêtements prêts");
   }
+
+  async function toggleItem(itemId: string, ready: boolean) {
+    await run(() => supabase.from("order_items").update({ ready }).eq("id", itemId), ready ? "Vêtement prêt" : "Vêtement remis en traitement");
+  }
+  const myLots = Math.max(1, Math.ceil(items.reduce((a, i) => a + i.quantity, 0) / 7));
+  const needsPlace = o.status === "en_cours" || ((o.status === "pret" || o.status === "a_livrer") && !o.locker_code && !o.bag_code);
+  const editableItems = o.status === "en_cours" || o.status === "pret" || o.status === "a_livrer";
 
   async function addPayment(context: "retrait" | "livraison" | "depot", amount: number) {
     if (amount <= 0) return true;
@@ -167,7 +176,7 @@ function OrderPage() {
             <CardHeader><CardTitle>Vêtements</CardTitle></CardHeader>
             <CardContent>
               <table className="w-full text-sm">
-                <thead className="text-left text-xs text-muted-foreground"><tr><th>Qté</th><th>Désignation</th><th>Couleurs</th><th className="text-right">P.U.</th><th className="text-right">Total</th></tr></thead>
+                <thead className="text-left text-xs text-muted-foreground"><tr><th>Qté</th><th>Désignation</th><th>Couleurs</th><th className="text-right">P.U.</th><th className="text-right">Total</th><th className="no-print pl-2">État</th></tr></thead>
                 <tbody>
                   {items.map((i) => (
                     <tr key={i.id} className="border-t">
@@ -176,6 +185,12 @@ function OrderPage() {
                       <td className="text-xs">{i.colors.join(", ")}</td>
                       <td className="text-right">{fcfa(i.unit_price)}</td>
                       <td className="text-right font-semibold">{fcfa(i.quantity * i.unit_price)}</td>
+                      <td className="no-print pl-2">
+                        <button disabled={!editableItems} onClick={() => toggleItem(i.id, !i.ready)}
+                          className={cn("whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-semibold disabled:opacity-60", i.ready ? "border-success bg-success/15 text-success" : "border-warning bg-warning/20")}>
+                          {i.ready ? "✓ Prêt" : "En cours"}
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -255,9 +270,9 @@ function OrderPage() {
         </div>
 
         <div className="space-y-6">
-          {o.status === "en_cours" && (
+          {needsPlace && (
             <Card className="border-primary">
-              <CardHeader><CardTitle>OK — Vêtements prêts</CardTitle></CardHeader>
+              <CardHeader><CardTitle>{o.status === "en_cours" ? "OK — Vêtements prêts" : "Ranger la commande"}</CardTitle></CardHeader>
               <CardContent className="space-y-3">
                 <div className="grid grid-cols-2 gap-2">
                   {(["casier", "sac"] as const).map((s) => <button key={s} onClick={() => setStorage(s)} className={cn("rounded-lg border p-2 text-sm", storage === s && "border-primary bg-primary/10 font-semibold")}>{s === "casier" ? "Casier" : "Sac (grosse commande)"}</button>)}
@@ -265,18 +280,19 @@ function OrderPage() {
                 {storage === "casier" && (
                   <div className="grid grid-cols-8 gap-1">
                     {LOCKERS.map((l) => (
-                      <button key={l} disabled={data.used.has(l)} onClick={() => setLocker(l)}
-                        className={cn("rounded border py-1 font-mono text-xs disabled:bg-muted disabled:text-muted-foreground/50", locker === l && "border-primary bg-primary text-primary-foreground")}>{l.slice(1)}</button>
+                      <button key={l} disabled={(data.used.get(l) ?? 0) + myLots > 12} onClick={() => setLocker(l)} title={`${data.used.get(l) ?? 0}/12 lots`}
+                        className={cn("rounded border py-1 font-mono text-xs disabled:bg-muted disabled:text-muted-foreground/50", (data.used.get(l) ?? 0) > 0 && "bg-primary/10", locker === l && "border-primary bg-primary text-primary-foreground")}>{l.slice(1)}<div className="text-[9px] opacity-70">{data.used.get(l) ?? 0}/12</div></button>
                     ))}
                   </div>
                 )}
+                {storage === "casier" && <p className="text-xs text-muted-foreground">Cette commande occupe {myLots} lot(s) de 7 vêtements. Chaque casier : 12 lots max.</p>}
                 {storage === "sac" && <p className="text-sm text-muted-foreground">Un numéro de sac (S-001, S-002…) sera attribué automatiquement.</p>}
                 <Button className="w-full" onClick={markReady}>Marquer prêt {storage === "casier" && locker && `→ ${locker}`}</Button>
               </CardContent>
             </Card>
           )}
 
-          {o.status === "pret" && (
+          {o.status === "pret" && !needsPlace && (
             <Card className="border-primary">
               <CardHeader><CardTitle>Retrait au pressing</CardTitle></CardHeader>
               <CardContent className="space-y-3">
