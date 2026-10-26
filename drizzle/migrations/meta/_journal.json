@@ -8,6 +8,13 @@
       "when": 1792684094990,
       "tag": "0000_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793022696734,
+      "tag": "0001_retraits_anciens_recus_casiers",
+      "breakpoints": true
     }
   ]
 }
