@@ -215,7 +215,16 @@ function NewOrder() {
           <CardHeader><CardTitle>3. Récapitulatif</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-baseline justify-between"><span className="text-muted-foreground">Total commande</span><span className="font-display text-3xl font-bold">{fcfa(total)}</span></div>
-            <div className="space-y-1"><Label>Date prévue de retrait</Label><Input type="date" value={pickup} onChange={(e) => setPickup(e.target.value)} /></div>
+            <div className="space-y-1">
+              <Label>Modèle de reçu</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {([["particulier", "Particulier"], ["pro", "Professionnel"]] as const).map(([k, v]) => (
+                  <button key={k} type="button" onClick={() => setReceiptType(k)} className={cn("rounded-lg border p-2 text-sm", receiptType === k && "border-primary bg-primary/10 font-semibold")}>{v}</button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-1"><Label>Date prévue de retrait / livraison</Label><Input type="date" value={pickup} onChange={(e) => setPickup(e.target.value)} /></div>
+            {receiptType === "pro" && <div className="space-y-1"><Label>Observations (sur le reçu)</Label><Textarea value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)} /></div>}
             <div className="space-y-1">
               <Label>Mode</Label>
               <div className="grid grid-cols-2 gap-2">

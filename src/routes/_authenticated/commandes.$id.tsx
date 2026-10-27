@@ -44,7 +44,7 @@ function OrderPage() {
   const { data, refetch } = useQuery({
     queryKey: ["order", id],
     queryFn: async () => {
-      const [o, items, pays, reqs, comps, occ, settings] = await Promise.all([
+      const [o, items, pays, reqs, comps, occ, settings, extra] = await Promise.all([
         supabase.from("order_summary").select("*").eq("id", id).single(),
         supabase.from("order_items").select("*").eq("order_id", id),
         supabase.from("payments").select("*").eq("order_id", id).order("created_at"),
@@ -52,9 +52,11 @@ function OrderPage() {
         supabase.from("complaints").select("*").eq("order_id", id).order("created_at", { ascending: false }),
         supabase.from("orders").select("id,locker_code,order_items(quantity)").in("status", ["pret", "a_livrer"]).not("locker_code", "is", null),
         supabase.from("settings").select("*").eq("key", "livreur_defaut").maybeSingle(),
+        supabase.from("orders").select("receipt_type,notes,clients(title,is_pro,establishment_type,contact_person,contact_phone)").eq("id", id).single(),
       ]);
       if (o.error) throw o.error;
       return {
+        extra: extra.data,
         o: o.data, items: items.data ?? [], pays: pays.data ?? [], reqs: reqs.data ?? [], comps: comps.data ?? [],
         used: (occ.data ?? []).filter((x) => x.id !== id).reduce((m, x) => m.set(x.locker_code!, (m.get(x.locker_code!) ?? 0) + Math.ceil(x.order_items.reduce((a, i) => a + i.quantity, 0) / 7)), new Map<string, number>()), defaultDeliverer: (settings.data?.value as string) ?? "",
       };
