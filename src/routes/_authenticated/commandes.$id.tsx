@@ -163,7 +163,7 @@ function OrderPage() {
       <PageHeader
         title={`Commande ${orderNo(o.number)}`}
         subtitle={`${o.client_name} · ${o.client_phone ?? ""} · déposée le ${dateTimeFr(o.created_at)}`}
-        actions={<><Button variant="outline" onClick={() => { window.print(); setPrintOk(true); }}><Printer className="mr-2 h-4 w-4" />{printOk ? "Réimprimer" : "Imprimer le reçu"}</Button></>}
+        actions={<><Button variant="outline" onClick={() => { window.print(); setPrintOk(true); }}><Printer className="mr-2 h-4 w-4" />{printOk ? "Réimprimer" : "Imprimer le reçu"}</Button><Button variant="outline" asChild><a href={`https://wa.me/${waPhone.length === 10 ? "225" + waPhone : waPhone}?text=${waText}`} target="_blank" rel="noreferrer">Envoyer par WhatsApp</a></Button></>}
       />
       {printOk && <div className="no-print mb-4 rounded-lg bg-success/15 p-3 text-sm font-medium text-success">Reçu imprimé avec succès. Utilisez « Réimprimer » si besoin (ou « Enregistrer en PDF » dans la fenêtre d'impression).</div>}
 
