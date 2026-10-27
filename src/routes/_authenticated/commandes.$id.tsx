@@ -88,6 +88,10 @@ function OrderPage() {
 
   if (!data) return <p className="text-muted-foreground">Chargement…</p>;
   const { o, items, pays, reqs, comps } = data;
+  const cl = data.extra?.clients;
+  const isPro = data.extra?.receipt_type === "pro";
+  const waText = encodeURIComponent(`PRESSING L'HYSOPE — Reçu ${orderNo(o.number)}\nClient : ${o.client_name}\n${items.map((i) => `${i.quantity} × ${i.designation} : ${fcfa(i.quantity * i.unit_price)}`).join("\n")}\nTotal : ${fcfa(o.final_total)}\nPayé : ${fcfa(o.paid)}\nReste : ${fcfa(o.balance)}`);
+  const waPhone = (o.client_phone ?? "").replace(/\D/g, "");
   const balance = o.balance ?? 0;
   const active = o.status !== "annule";
 
@@ -353,6 +357,49 @@ function OrderPage() {
       </div>
 
       {/* Reçu ½ A4 */}
+      {isPro ? (
+        <div className="print-area hidden print:block">
+          <div className="relative isolate overflow-hidden border p-6 text-[11px] text-foreground" style={{ minHeight: "270mm" }}>
+            <img src={logoAsset.url} alt="" aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[120mm] w-[120mm] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover" style={{ opacity: 0.08, filter: "grayscale(1) sepia(1) hue-rotate(180deg) saturate(2.5) brightness(1.3)", WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }} />
+            <div className="flex items-start justify-between border-b-2 border-primary pb-3">
+              <div className="flex items-center gap-3">
+                <img src={logoAsset.url} alt="Logo" className="h-16 w-16 rounded-full object-cover" />
+                <div><div className="font-display text-2xl font-bold">PRESSING L'HYSOPE</div><div>Yopougon Ananeraie · Tél. : 07 08 52 11 44 / 05 45 51 92 36</div></div>
+              </div>
+              <div className="text-right"><div className="text-xs uppercase tracking-wide">Reçu professionnel</div><div className="text-xl font-bold">{orderNo(o.number)}</div></div>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-4">
+              <div className="rounded border p-2">
+                <div className="text-[10px] uppercase text-muted-foreground">Établissement</div>
+                <div className="text-sm font-bold">{o.client_name}</div>
+                {cl?.establishment_type && <div>{cl.establishment_type}</div>}
+                {o.client_phone && <div>Tél. : {o.client_phone}</div>}
+                {cl?.contact_person && <div>Responsable : {cl.contact_person}{cl.contact_phone ? ` — ${cl.contact_phone}` : ""}</div>}
+              </div>
+              <div className="rounded border p-2">
+                <div>Date de dépôt : <b>{dateFr(o.created_at)}</b></div>
+                <div>{o.delivery_mode === "livraison" ? "Livraison prévue" : "Retrait prévu"} : <b>{dateFr(o.pickup_date)}</b></div>
+                <div>Nombre d'articles : <b>{items.reduce((s, i) => s + i.quantity, 0)}</b></div>
+              </div>
+            </div>
+            <table className="mt-3 w-full border-collapse">
+              <thead><tr className="bg-secondary"><th className="border p-1 text-left">DÉSIGNATION</th><th className="border p-1 text-right">QTÉ</th><th className="border p-1 text-right">PRIX UNITAIRE</th><th className="border p-1 text-right">MONTANT</th></tr></thead>
+              <tbody>{items.map((i) => <tr key={i.id}><td className="border p-1">{i.designation}{i.observation && ` (${i.observation})`}</td><td className="border p-1 text-right">{i.quantity}</td><td className="border p-1 text-right">{fcfa(i.unit_price)}</td><td className="border p-1 text-right">{fcfa(i.quantity * i.unit_price)}</td></tr>)}</tbody>
+            </table>
+            <div className="mt-3 ml-auto w-72 space-y-0.5 rounded border p-2">
+              <div className="flex justify-between text-sm"><span>Total prestation</span><b>{fcfa(o.final_total)}</b></div>
+              <div className="flex justify-between"><span>Montant payé / avance</span><span>{fcfa(o.paid)}</span></div>
+              <div className="flex justify-between text-sm"><span>Reste à payer</span><b>{fcfa(balance)}</b></div>
+              <div className="flex justify-between"><span>Mode de paiement</span><span>{[...new Set(pays.map((p) => METHOD_LABEL[p.method]))].join(", ") || "—"}</span></div>
+            </div>
+            <div className="mt-3 rounded border p-2" style={{ minHeight: "20mm" }}><div className="text-[10px] uppercase text-muted-foreground">Observations</div>{data.extra?.notes}</div>
+            <div className="mt-6 grid grid-cols-2 gap-8 text-center">
+              <div><div className="border-b" style={{ height: "18mm" }} />Signature du pressing</div>
+              <div><div className="border-b" style={{ height: "18mm" }} />Signature du client</div>
+            </div>
+          </div>
+        </div>
+      ) : (
       <div className="print-area hidden print:block">
         <div style={{ height: "138mm" }} className="relative isolate overflow-hidden border p-5 text-[11px] text-foreground">
           <img src={logoAsset.url} alt="" aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[95mm] w-[95mm] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover" style={{ opacity: 0.1, filter: "grayscale(1) sepia(1) hue-rotate(180deg) saturate(2.5) brightness(1.3)", WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }} />
@@ -360,7 +407,7 @@ function OrderPage() {
             <div><div className="font-display text-xl font-bold">Pressing L'Hysope</div><div>Yopougon Ananeraie</div><div>Tél. : 07 08 52 11 44 / 05 45 51 92 36</div></div>
             <div className="text-right"><div className="text-lg font-bold">{orderNo(o.number)}</div><div>Date : {dateFr(o.created_at)}</div><div>Retrait prévu : <b>{dateFr(o.pickup_date)}</b></div></div>
           </div>
-          <div className="mt-2">Client : <b>{o.client_name}</b> — Contact : {o.client_phone}</div>
+          <div className="mt-2">Client : <b>{cl?.title ? `${cl.title} ` : ""}{o.client_name}</b> — Contact : {o.client_phone}</div>
           <table className="mt-2 w-full border-collapse">
             <thead><tr className="border-y"><th className="text-left">QTÉ</th><th className="text-left">DÉSIGNATION</th><th className="text-left">COULEUR</th><th className="text-right">P.U.</th><th className="text-right">TOTAL</th></tr></thead>
             <tbody>{items.map((i) => <tr key={i.id}><td>{i.quantity}</td><td>{i.designation}{i.observation && ` (${i.observation})`}</td><td>{i.colors.join(", ")}</td><td className="text-right">{fcfa(i.unit_price)}</td><td className="text-right">{fcfa(i.quantity * i.unit_price)}</td></tr>)}</tbody>
@@ -374,6 +421,7 @@ function OrderPage() {
           <p className="mt-3 border-t pt-1 text-[9px]"><b>IMPORTANT :</b> passé le délai d'un mois, plus de garantie du pressing et un montant de 100 F est perçu par jour pour frais de gardiennage.</p>
         </div>
       </div>
+      )}
     </div>
   );
 }
