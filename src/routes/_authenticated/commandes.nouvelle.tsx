@@ -29,7 +29,7 @@ function NewOrder() {
   const { data: me } = useMe();
   const [clientId, setClientId] = useState<string | null>(search.client ?? null);
   const [clientQ, setClientQ] = useState("");
-  const [newClient, setNewClient] = useState<null | { name: string; phone: string; whatsapp: string; address: string; quartier: string; notes: string }>(null);
+  const [newClient, setNewClient] = useState<null | { title: string; name: string; phone: string; whatsapp: string; address: string; quartier: string; notes: string; is_pro: boolean; establishment_type: string; contact_person: string; contact_phone: string }>(null);
   const [lines, setLines] = useState<Line[]>([]);
   const [catId, setCatId] = useState<string>("");
   const [pickup, setPickup] = useState(() => new Date(Date.now() + 3 * 864e5).toISOString().slice(0, 10));
@@ -37,6 +37,8 @@ function NewOrder() {
   const [payOpt, setPayOpt] = useState<"integral" | "avance" | "retrait">("retrait");
   const [advance, setAdvance] = useState(0);
   const [method, setMethod] = useState<PayMethod>("especes");
+  const [receiptType, setReceiptType] = useState<"particulier" | "pro">("particulier");
+  const [orderNotes, setOrderNotes] = useState("");
   const [busy, setBusy] = useState(false);
 
   const { data: cats } = useQuery({
@@ -75,12 +77,12 @@ function NewOrder() {
       let cid = clientId;
       if (!cid && newClient) {
         if (!newClient.name.trim()) throw new Error("Nom du client requis");
-        const { data, error } = await supabase.from("clients").insert({ ...newClient, created_by: (me?.id ?? null) }).select("id").single();
+        const { data, error } = await supabase.from("clients").insert({ ...newClient, title: newClient.is_pro ? null : newClient.title || null, establishment_type: newClient.is_pro ? newClient.establishment_type || null : null, created_by: (me?.id ?? null) }).select("id").single();
         if (error) throw error;
         cid = data.id;
       }
       const { data: order, error } = await supabase.from("orders").insert({
-        client_id: cid!, pickup_date: pickup, delivery_mode: mode, agency_id: me?.profile?.agency_id ?? null,
+        client_id: cid!, pickup_date: pickup, delivery_mode: mode, agency_id: me?.profile?.agency_id ?? null, receipt_type: receiptType, notes: orderNotes.trim() || null,
       }).select("id").single();
       if (error) throw error;
       const { error: ie } = await supabase.from("order_items").insert(lines.map((l) => ({
@@ -108,14 +110,45 @@ function NewOrder() {
             <CardContent className="space-y-3">
               {client ? (
                 <div className="flex items-center justify-between rounded-lg bg-secondary p-3">
-                  <div><div className="font-semibold">{client.name}</div><div className="text-sm text-muted-foreground">{client.phone} · {client.quartier}</div></div>
+                  <div><div className="font-semibold">{client.title ? `${client.title} ` : ""}{client.name}{client.is_pro && <span className="ml-2 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">Professionnel{client.establishment_type ? ` · ${client.establishment_type}` : ""}</span>}</div><div className="text-sm text-muted-foreground">{client.phone} · {client.quartier}</div></div>
                   <Button variant="ghost" size="sm" onClick={() => setClientId(null)}>Changer</Button>
                 </div>
               ) : newClient ? (
                 <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-1 sm:col-span-2">
+                    <Label>Type de client</Label>
+                    <div className="flex gap-2">
+                      {([[false, "Particulier"], [true, "Professionnel (hôtel, clinique, restaurant…)"]] as const).map(([v, t]) => (
+                        <button key={t} type="button" onClick={() => { setNewClient({ ...newClient, is_pro: v }); setReceiptType(v ? "pro" : "particulier"); }} className={cn("rounded-lg border px-3 py-1.5 text-sm", newClient.is_pro === v && "border-primary bg-primary/10 font-semibold")}>{t}</button>
+                      ))}
+                    </div>
+                  </div>
+                  {!newClient.is_pro ? (
+                    <div className="space-y-1">
+                      <Label>Titre</Label>
+                      <div className="flex gap-2">
+                        {["M.", "Mme", "Mlle"].map((t) => (
+                          <button key={t} type="button" onClick={() => setNewClient({ ...newClient, title: t })} className={cn("rounded-lg border px-3 py-1.5 text-sm", newClient.title === t && "border-primary bg-primary/10 font-semibold")}>{t}</button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-1">
+                      <Label>Type d'établissement</Label>
+                      <select className="h-9 w-full rounded-md border bg-background px-2 text-sm" value={newClient.establishment_type} onChange={(e) => setNewClient({ ...newClient, establishment_type: e.target.value })}>
+                        <option value="">—</option>{["Hôtel", "Clinique", "Restaurant", "Entreprise", "Autre"].map((t) => <option key={t}>{t}</option>)}
+                      </select>
+                    </div>
+                  )}
                   {(["name", "phone", "whatsapp", "address", "quartier"] as const).map((k) => (
                     <div key={k} className="space-y-1">
-                      <Label>{{ name: "Nom *", phone: "Téléphone", whatsapp: "WhatsApp", address: "Adresse", quartier: "Quartier" }[k]}</Label>
+                      <Label>{{ name: newClient.is_pro ? "Nom de l'établissement *" : "Nom *", phone: "Téléphone", whatsapp: "WhatsApp", address: "Adresse", quartier: "Quartier" }[k]}</Label>
+                      <Input value={newClient[k]} onChange={(e) => setNewClient({ ...newClient, [k]: e.target.value })} />
+                    </div>
+                  ))}
+                  {newClient.is_pro && (["contact_person", "contact_phone"] as const).map((k) => (
+                    <div key={k} className="space-y-1">
+                      <Label>{k === "contact_person" ? "Personne responsable" : "Contact du responsable"}</Label>
                       <Input value={newClient[k]} onChange={(e) => setNewClient({ ...newClient, [k]: e.target.value })} />
                     </div>
                   ))}
@@ -126,11 +159,11 @@ function NewOrder() {
                 <>
                   <Input placeholder="Rechercher un client (nom ou téléphone)…" value={clientQ} onChange={(e) => setClientQ(e.target.value)} />
                   {clients?.map((c) => (
-                    <button key={c.id} onClick={() => setClientId(c.id)} className="block w-full rounded-lg border p-3 text-left hover:bg-muted">
-                      <span className="font-medium">{c.name}</span> <span className="text-sm text-muted-foreground">{c.phone}</span>
+                    <button key={c.id} onClick={() => { setClientId(c.id); setReceiptType(c.is_pro ? "pro" : "particulier"); }} className="block w-full rounded-lg border p-3 text-left hover:bg-muted">
+                      <span className="font-medium">{c.title ? `${c.title} ` : ""}{c.name}</span> <span className="text-sm text-muted-foreground">{c.phone}</span>
                     </button>
                   ))}
-                  <Button variant="outline" onClick={() => setNewClient({ name: clientQ, phone: "", whatsapp: "", address: "", quartier: "", notes: "" })}>+ Nouveau client</Button>
+                  <Button variant="outline" onClick={() => setNewClient({ title: "", name: clientQ, phone: "", whatsapp: "", address: "", quartier: "", notes: "", is_pro: false, establishment_type: "", contact_person: "", contact_phone: "" })}>+ Nouveau client</Button>
                 </>
               )}
             </CardContent>
@@ -182,7 +215,16 @@ function NewOrder() {
           <CardHeader><CardTitle>3. Récapitulatif</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-baseline justify-between"><span className="text-muted-foreground">Total commande</span><span className="font-display text-3xl font-bold">{fcfa(total)}</span></div>
-            <div className="space-y-1"><Label>Date prévue de retrait</Label><Input type="date" value={pickup} onChange={(e) => setPickup(e.target.value)} /></div>
+            <div className="space-y-1">
+              <Label>Modèle de reçu</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {([["particulier", "Particulier"], ["pro", "Professionnel"]] as const).map(([k, v]) => (
+                  <button key={k} type="button" onClick={() => setReceiptType(k)} className={cn("rounded-lg border p-2 text-sm", receiptType === k && "border-primary bg-primary/10 font-semibold")}>{v}</button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-1"><Label>Date prévue de retrait / livraison</Label><Input type="date" value={pickup} onChange={(e) => setPickup(e.target.value)} /></div>
+            {receiptType === "pro" && <div className="space-y-1"><Label>Observations (sur le reçu)</Label><Textarea value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)} /></div>}
             <div className="space-y-1">
               <Label>Mode</Label>
               <div className="grid grid-cols-2 gap-2">

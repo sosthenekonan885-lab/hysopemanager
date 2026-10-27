@@ -135,40 +135,55 @@ export type Database = {
         Row: {
           address: string | null
           agency_id: string | null
+          contact_person: string | null
+          contact_phone: string | null
           created_at: string | null
           created_by: string | null
           delivery_eligible: boolean
+          establishment_type: string | null
           id: string
+          is_pro: boolean
           name: string
           notes: string | null
           phone: string | null
           quartier: string | null
+          title: string | null
           whatsapp: string | null
         }
         Insert: {
           address?: string | null
           agency_id?: string | null
+          contact_person?: string | null
+          contact_phone?: string | null
           created_at?: string | null
           created_by?: string | null
           delivery_eligible?: boolean
+          establishment_type?: string | null
           id?: string
+          is_pro?: boolean
           name: string
           notes?: string | null
           phone?: string | null
           quartier?: string | null
+          title?: string | null
           whatsapp?: string | null
         }
         Update: {
           address?: string | null
           agency_id?: string | null
+          contact_person?: string | null
+          contact_phone?: string | null
           created_at?: string | null
           created_by?: string | null
           delivery_eligible?: boolean
+          establishment_type?: string | null
           id?: string
+          is_pro?: boolean
           name?: string
           notes?: string | null
           phone?: string | null
           quartier?: string | null
+          title?: string | null
           whatsapp?: string | null
         }
         Relationships: [
@@ -460,10 +475,12 @@ export type Database = {
           id: string
           legacy: boolean
           locker_code: string | null
+          notes: string | null
           number: number
           pickup_date: string | null
           ready_at: string | null
           receipt_presented: boolean | null
+          receipt_type: string
           status: Database["public"]["Enums"]["order_status"]
           total: number
           withdrawn_at: string | null
@@ -483,10 +500,12 @@ export type Database = {
           id?: string
           legacy?: boolean
           locker_code?: string | null
+          notes?: string | null
           number?: number
           pickup_date?: string | null
           ready_at?: string | null
           receipt_presented?: boolean | null
+          receipt_type?: string
           status?: Database["public"]["Enums"]["order_status"]
           total?: number
           withdrawn_at?: string | null
@@ -506,10 +525,12 @@ export type Database = {
           id?: string
           legacy?: boolean
           locker_code?: string | null
+          notes?: string | null
           number?: number
           pickup_date?: string | null
           ready_at?: string | null
           receipt_presented?: boolean | null
+          receipt_type?: string
           status?: Database["public"]["Enums"]["order_status"]
           total?: number
           withdrawn_at?: string | null

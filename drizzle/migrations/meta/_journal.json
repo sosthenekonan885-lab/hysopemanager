@@ -15,6 +15,13 @@
       "when": 1793022696734,
       "tag": "0001_retraits_anciens_recus_casiers",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793103562076,
+      "tag": "0002_client_title_pro_receipt",
+      "breakpoints": true
     }
   ]
 }
