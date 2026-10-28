@@ -35,6 +35,10 @@ function Dashboard() {
         <Stat label="Dépôts du jour" value={s?.orders ?? 0} hint={fcfa(s?.ordersValue)} />
         <Stat label="En traitement" value={o?.c['en_cours'] ?? 0} />
         <Stat label="Prêts / à livrer" value={`${o?.c['pret'] ?? 0} / ${o?.c['a_livrer'] ?? 0}`} />
+        <Stat label="Retraits du jour" value={s?.withdrawalsCount ?? 0} hint={fcfa(s?.withdrawalsAmount)} />
+        <Stat label="Avances au dépôt" value={fcfa(s?.depositCash)} />
+        <Stat label="Dépenses du jour" value={fcfa(s?.expenses)} />
+        <Stat label="Caisse théorique" value={fcfa(s?.theoretical)} />
       </div>
       <h2 className="mb-3 text-xl font-bold">Retraits prévus jusqu'à aujourd'hui</h2>
       <div className="space-y-2">
