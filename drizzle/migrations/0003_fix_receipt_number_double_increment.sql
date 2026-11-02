@@ -1,0 +1,2 @@
+ALTER TABLE public.orders ALTER COLUMN number SET DEFAULT NULL;
+COMMENT ON COLUMN public.orders.number IS 'Receipt number allocated only by public.guard_order for new orders; legacy orders retain the supplied paper receipt number. Do not add a nextval default: it consumes a second number before the trigger.';
