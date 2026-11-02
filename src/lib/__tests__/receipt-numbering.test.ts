@@ -24,6 +24,7 @@ async function numberingDatabase() {
   await db.exec(`CREATE TRIGGER trg_guard_order BEFORE INSERT OR UPDATE ON public.orders
     FOR EACH ROW EXECUTE FUNCTION public.guard_order();`);
   await db.exec(readFileSync("drizzle/migrations/0003_fix_receipt_number_double_increment.sql", "utf8"));
+  await db.exec(readFileSync("drizzle/migrations/0004_receipt_trigger_placeholder_default.sql", "utf8"));
   return db;
 }
 
