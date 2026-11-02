@@ -29,6 +29,13 @@
       "when": 1793628622488,
       "tag": "0003_fix_receipt_number_double_increment",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793628664935,
+      "tag": "0004_receipt_trigger_placeholder_default",
+      "breakpoints": true
     }
   ]
 }

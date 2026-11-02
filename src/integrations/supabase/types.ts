@@ -501,7 +501,7 @@ export type Database = {
           legacy?: boolean
           locker_code?: string | null
           notes?: string | null
-          number: number
+          number?: number
           pickup_date?: string | null
           ready_at?: string | null
           receipt_presented?: boolean | null

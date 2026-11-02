@@ -1,0 +1,2 @@
+ALTER TABLE public.orders ALTER COLUMN number SET DEFAULT 0;
+COMMENT ON COLUMN public.orders.number IS 'The constant zero default is a placeholder overwritten by public.guard_order before constraints are checked. Only the trigger allocates sequence numbers; legacy paper receipts keep their supplied number.';
