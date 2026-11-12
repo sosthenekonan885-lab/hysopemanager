@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Pencil, Search } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Empty, Stat } from "@/components/hysope/ui";
 import { Button } from "@/components/ui/button";
@@ -10,12 +10,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { dateFr, dateTimeFr, fcfa, orderNo, todayISO } from "@/lib/format";
-import { automaticWithdrawalOrder, availableWithdrawalOrders, type WithdrawalOrder } from "@/lib/withdrawal-matching";
 
 export const Route = createFileRoute("/_authenticated/retraits")({
   head: () => ({ meta: [
     { title: "Retraits — Hysope Manager" },
-    { name: "description", content: "Journal des retraits du Pressing L'Hysope et recherche des commandes prêtes par client." },
+    { name: "description", content: "Journal des retraits du Pressing L'Hysope avec ou sans numéro de reçu." },
     { property: "og:title", content: "Retraits — Hysope Manager" },
     { property: "og:description", content: "Enregistrement et suivi des retraits au Pressing L'Hysope." },
     { property: "og:type", content: "website" },
@@ -34,10 +33,6 @@ function Withdrawals() {
   const [f, setF] = useState<Form>(empty());
   const [edit, setEdit] = useState<(Form & { id: string }) | null>(null);
   const [busy, setBusy] = useState(false);
-  const [clientSearch, setClientSearch] = useState("");
-  const [candidates, setCandidates] = useState<WithdrawalOrder[]>([]);
-  const [searching, setSearching] = useState(false);
-  const [searched, setSearched] = useState(false);
 
   const { data, refetch } = useQuery({
     queryKey: ["withdrawals", from, to],
@@ -60,67 +55,27 @@ function Withdrawals() {
     if (o) setF((x) => ({ ...x, client_name: x.client_name || (o.client_name ?? ""), amount: x.amount || (o.balance ?? 0) }));
   }
 
-  function selectOrder(o: WithdrawalOrder) {
-    if (!o.number || !o.id) return;
-    setF((x) => ({ ...x, receipt_no: String(o.number).padStart(6, "0"), client_name: o.client_name ?? "", amount: o.balance ?? 0 }));
-  }
-
-  async function findReadyOrder(): Promise<WithdrawalOrder | undefined> {
-    const term = clientSearch.trim() || f.client_name.trim();
-    if (!term) { toast.error("Saisissez le nom ou le téléphone du client"); return; }
-    setSearching(true);
-    setCandidates([]);
-    setSearched(false);
-    try {
-      const safeTerm = term.replace(/[,%()_*]/g, " ").trim();
-      if (!safeTerm) throw new Error("Saisissez le nom ou le téléphone du client");
-      const clients = await supabase.from("clients").select("id").or(`name.ilike.%${safeTerm}%,phone.ilike.%${safeTerm}%`);
-      if (clients.error) throw clients.error;
-      const ids = (clients.data ?? []).map((c) => c.id);
-      if (!ids.length) { setSearched(true); return; }
-      const result = await supabase.from("order_summary").select("id,number,client_name,client_phone,status,balance,pickup_date").in("client_id", ids).eq("status", "pret").order("number", { ascending: false });
-      if (result.error) throw result.error;
-      const orders = result.data ?? [];
-      const numbers = orders.flatMap((o) => o.number ? [o.number] : []);
-      const previous = numbers.length ? await supabase.from("withdrawals").select("receipt_no").in("receipt_no", numbers) : { data: [], error: null };
-      if (previous.error) throw previous.error;
-      const matches = availableWithdrawalOrders(orders, (previous.data ?? []).map((w) => w.receipt_no));
-      setCandidates(matches);
-      setSearched(true);
-      const match = automaticWithdrawalOrder(matches);
-      if (match) selectOrder(match);
-      return match;
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Recherche impossible");
-      return undefined;
-    } finally { setSearching(false); }
-  }
-
   async function add(e: React.FormEvent) {
     e.preventDefault();
     const n = Number(f.receipt_no.replace(/\D/g, ""));
     const clientName = f.client_name.trim();
     const amount = f.amount;
-    if (!n) {
-      await findReadyOrder();
-      return;
-    }
     if (!clientName) return void toast.error("Nom du client requis");
     setBusy(true);
-    const { data: o, error: lookupError } = await supabase.from("orders").select("id").eq("number", n).maybeSingle();
+    const { data: o, error: lookupError } = n ? await supabase.from("orders").select("id").eq("number", n).maybeSingle() : { data: null, error: null };
     if (lookupError) { setBusy(false); return void toast.error(lookupError.message); }
-    const { error } = await supabase.from("withdrawals").insert({ date: f.date, client_name: clientName, receipt_no: n, amount: Math.max(0, amount), order_id: o?.id ?? null });
+    const { error } = await supabase.from("withdrawals").insert({ date: f.date, client_name: clientName, receipt_no: n || null, amount: Math.max(0, amount), order_id: o?.id ?? null });
     setBusy(false);
     if (error) return void toast.error(error.code === "23505" ? `Le reçu ${orderNo(n)} a déjà été retiré` : error.message);
     toast.success("Retrait enregistré");
-    setF(empty()); setClientSearch(""); setCandidates([]); setSearched(false); refresh();
+    setF(empty()); refresh();
   }
 
   async function save() {
     if (!edit) return;
     const n = Number(edit.receipt_no.replace(/\D/g, ""));
-    if (!n || !edit.client_name.trim()) return void toast.error("Nom et numéro du reçu requis");
-    const { error } = await supabase.from("withdrawals").update({ date: edit.date, client_name: edit.client_name.trim(), receipt_no: n, amount: Math.max(0, edit.amount) }).eq("id", edit.id);
+    if (!edit.client_name.trim()) return void toast.error("Nom du client requis");
+    const { error } = await supabase.from("withdrawals").update({ date: edit.date, client_name: edit.client_name.trim(), receipt_no: n || null, amount: Math.max(0, edit.amount) }).eq("id", edit.id);
     if (error) return void toast.error(error.code === "23505" ? `Le reçu ${orderNo(n)} a déjà un retrait` : error.message);
     toast.success("Retrait modifié"); setEdit(null); refresh();
   }
@@ -136,26 +91,12 @@ function Withdrawals() {
       <Card className="no-print mb-6">
         <CardHeader><CardTitle>Enregistrer un retrait</CardTitle></CardHeader>
         <CardContent>
-          <div className="mb-4 flex flex-wrap items-end gap-2">
-            <div className="min-w-0 flex-1 space-y-1">
-              <Label htmlFor="withdrawal-client-search">Client sans reçu : nom ou téléphone</Label>
-              <Input id="withdrawal-client-search" value={clientSearch} onChange={(e) => { setClientSearch(e.target.value); setCandidates([]); setSearched(false); setF((x) => ({ ...x, receipt_no: "", client_name: "", amount: 0 })); }} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void findReadyOrder(); } }} />
-            </div>
-            <Button type="button" variant="secondary" disabled={searching || busy} onClick={() => void findReadyOrder()}><Search className="h-4 w-4" />{searching ? "Recherche…" : "Commandes prêtes"}</Button>
-          </div>
-          {searched && !candidates.length && <p role="status" className="mb-4 text-sm text-muted-foreground">Aucune commande prête non retirée pour ce client.</p>}
-          {!!candidates.length && <div className="mb-4 space-y-2">
-            {candidates.length > 1 && <p role="status" className="text-sm">Plusieurs commandes prêtes : choisissez le reçu.</p>}
-            {candidates.map((o) => <Button key={o.id} type="button" variant={Number(f.receipt_no) === o.number ? "secondary" : "outline"} className="h-auto w-full justify-start whitespace-normal py-2 text-left" onClick={() => selectOrder(o)}>
-              <span>{orderNo(o.number)} · {o.client_name} · {o.client_phone || "—"} · Retrait prévu {dateFr(o.pickup_date)} · Reste {fcfa(o.balance)}</span>
-            </Button>)}
-          </div>}
           <form onSubmit={add} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <div className="space-y-1"><Label>Date</Label><Input type="date" value={f.date} onChange={(e) => setF({ ...f, date: e.target.value })} /></div>
             <div className="space-y-1"><Label htmlFor="withdrawal-receipt">N° du reçu (facultatif)</Label><Input id="withdrawal-receipt" placeholder="000123" value={f.receipt_no} onChange={(e) => setF({ ...f, receipt_no: e.target.value })} onBlur={(e) => lookup(e.target.value)} /></div>
-            <div className="space-y-1"><Label htmlFor="withdrawal-name">Nom du client</Label><Input id="withdrawal-name" value={f.client_name} onChange={(e) => { setF({ ...f, client_name: e.target.value }); setClientSearch(""); setCandidates([]); setSearched(false); }} /></div>
+            <div className="space-y-1"><Label htmlFor="withdrawal-name">Nom du client</Label><Input id="withdrawal-name" value={f.client_name} onChange={(e) => setF({ ...f, client_name: e.target.value })} /></div>
             <div className="space-y-1"><Label>Montant payé</Label><Input type="number" min={0} value={f.amount} onChange={(e) => setF({ ...f, amount: +e.target.value })} /></div>
-            <div className="flex items-end"><Button className="w-full" disabled={busy || searching}>Enregistrer</Button></div>
+            <div className="flex items-end"><Button className="w-full" disabled={busy}>Enregistrer</Button></div>
           </form>
         </CardContent>
       </Card>
@@ -188,7 +129,7 @@ function Withdrawals() {
                 ) : (
                   <tr key={r.id} className="border-t">
                     <td className="p-3">{dateFr(r.date)}</td>
-                    <td>{r.order_id ? <Link to="/commandes/$id" params={{ id: r.order_id }} className="font-semibold text-primary">{orderNo(r.receipt_no)}</Link> : <span className="font-semibold">{orderNo(r.receipt_no)}</span>}</td>
+                    <td>{r.order_id && r.receipt_no != null ? <Link to="/commandes/$id" params={{ id: r.order_id }} className="font-semibold text-primary">{orderNo(r.receipt_no)}</Link> : <span className="font-semibold">{r.receipt_no == null ? "—" : orderNo(r.receipt_no)}</span>}</td>
                     <td>{r.client_name}</td>
                     <td className="text-right font-semibold">{fcfa(r.amount)}</td>
                     <td className="pl-3 text-xs text-muted-foreground">
@@ -196,7 +137,7 @@ function Withdrawals() {
                       {r.updated_at && <div>Modifié par {data?.names.get(r.updated_by ?? "") ?? "—"} le {dateTimeFr(r.updated_at)}</div>}
                     </td>
                     <td className="no-print pr-2 text-right">
-                      <Button size="icon" variant="ghost" aria-label="Modifier" onClick={() => setEdit({ id: r.id, date: r.date, client_name: r.client_name, receipt_no: String(r.receipt_no), amount: r.amount })}><Pencil className="h-4 w-4" /></Button>
+                      <Button size="icon" variant="ghost" aria-label="Modifier" onClick={() => setEdit({ id: r.id, date: r.date, client_name: r.client_name, receipt_no: r.receipt_no == null ? "" : String(r.receipt_no), amount: r.amount })}><Pencil className="h-4 w-4" /></Button>
                     </td>
                   </tr>
                 ))}

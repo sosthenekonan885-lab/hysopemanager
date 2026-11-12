@@ -787,7 +787,7 @@ export type Database = {
           date: string
           id: string
           order_id: string | null
-          receipt_no: number
+          receipt_no: number | null
           updated_at: string | null
           updated_by: string | null
         }
@@ -799,7 +799,7 @@ export type Database = {
           date?: string
           id?: string
           order_id?: string | null
-          receipt_no: number
+          receipt_no?: number | null
           updated_at?: string | null
           updated_by?: string | null
         }
@@ -811,7 +811,7 @@ export type Database = {
           date?: string
           id?: string
           order_id?: string | null
-          receipt_no?: number
+          receipt_no?: number | null
           updated_at?: string | null
           updated_by?: string | null
         }

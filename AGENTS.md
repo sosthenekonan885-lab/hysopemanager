@@ -11,4 +11,4 @@
 
 - Allocate new receipt numbers only in the database order guard, never in a column sequence default as well; dual allocation skips every other number. Preserve issued numbers and legacy paper receipt handling.
 - Test database numbering migrations with an isolated PGlite database using the actual migration SQL and guard function, so regression checks do not create fake receipts in production.
-- Resolve receipt-free withdrawals through existing ready orders, using shared matching helpers and requiring selection for multiple matches; never allocate a new receipt number from the withdrawal journal.
+- Manual withdrawals accept a nullable existing receipt number without automatic order matching; never allocate a new receipt number from the withdrawal journal.

@@ -1,0 +1,2 @@
+ALTER TABLE public.withdrawals ALTER COLUMN receipt_no DROP NOT NULL;
+COMMENT ON COLUMN public.withdrawals.receipt_no IS 'Optional existing receipt number; NULL for manual withdrawals without a receipt. Never allocate a new receipt number here.';

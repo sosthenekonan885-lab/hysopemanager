@@ -19,15 +19,20 @@ vi.mock("@/integrations/supabase/client", () => ({ supabase: { from: (table: str
 import { Route } from "@/routes/_authenticated/retraits";
 afterEach(() => { cleanup(); writes.mockClear(); });
 
-describe("formulaire de retrait sans numéro", () => {
-  it("retrouve le reçu 000027 puis enregistre ce reçu existant après confirmation", async () => {
+describe("formulaire de retrait", () => {
+  it("enregistre sans reçu et sans attribuer un numéro", async () => {
     const Form = (Route as unknown as { component: ComponentType }).component;
     render(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}><Form /></QueryClientProvider>);
     fireEvent.change(screen.getByLabelText("Nom du client"), { target: { value: "Konan" } });
     fireEvent.click(screen.getByRole("button", { name: /^Enregistrer$/ }));
-    await waitFor(() => expect((screen.getByLabelText("N° du reçu (facultatif)") as HTMLInputElement).value).toBe("000027"));
-    expect(writes).not.toHaveBeenCalled();
+    await waitFor(() => expect(writes).toHaveBeenCalledWith(expect.objectContaining({ receipt_no: null, order_id: null, client_name: "Konan", amount: 0 })));
+  });
+  it("conserve le numéro saisi 000027", async () => {
+    const Form = (Route as unknown as { component: ComponentType }).component;
+    render(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}><Form /></QueryClientProvider>);
+    fireEvent.change(screen.getByLabelText("Nom du client"), { target: { value: "Konan" } });
+    fireEvent.change(screen.getByLabelText("N° du reçu (facultatif)"), { target: { value: "000027" } });
     fireEvent.click(screen.getByRole("button", { name: /^Enregistrer$/ }));
-    await waitFor(() => expect(writes).toHaveBeenCalledWith(expect.objectContaining({ receipt_no: 27, order_id: "order-27", client_name: "Mme Konan", amount: 2500 })));
+    await waitFor(() => expect(writes).toHaveBeenCalledWith(expect.objectContaining({ receipt_no: 27, order_id: "order-27" })));
   });
 });

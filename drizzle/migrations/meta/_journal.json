@@ -36,6 +36,13 @@
       "when": 1793628664935,
       "tag": "0004_receipt_trigger_placeholder_default",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794501709377,
+      "tag": "0005_optional_withdrawal_receipt",
+      "breakpoints": true
     }
   ]
 }
