@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/hysope/Logo";
+import pressingAccueil from "@/assets/pressing-accueil.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -15,6 +16,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Accès au logiciel de gestion du Pressing L'Hysope, Yopougon Ananeraie." },
       { property: "og:title", content: "Hysope Manager" },
       { property: "og:description", content: "Logiciel de gestion du Pressing L'Hysope." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: LoginPage,
@@ -64,7 +67,9 @@ function LoginPage() {
         </div>
         <p className="text-sm text-primary-foreground/70">Pressing L'Hysope · Yopougon Ananeraie</p>
       </div>
-      <div className="flex items-center justify-center p-6">
+      <div className="relative isolate flex items-center justify-center overflow-hidden bg-secondary p-6">
+        <img src={pressingAccueil} alt="" width={1536} height={1024} fetchPriority="high" className="absolute inset-0 -z-20 h-full w-full object-cover object-left" />
+        <div className="absolute inset-0 -z-10 bg-background/75" aria-hidden="true" />
         <form onSubmit={submit} className="w-full max-w-sm space-y-5">
           <div className="lg:hidden"><Logo /></div>
           <div>
