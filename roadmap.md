@@ -2,3 +2,6 @@
 - [x] Afficher les modes dans l’historique et les recettes journalières sans double comptage.
 - [x] Tester le formulaire, les calculs et la conservation des anciens retraits (16 tests réussis).
 - [ ] Vérifier un enregistrement réel dans le compte de l’utilisateur : aucune session disponible, aucun compte ne correspond à l’utilisateur demandeur.
+- [ ] Ajouter le classement mensuel des clients par sommes réellement encaissées, avec filtres et podium.
+- [ ] Tester les paiements partiels, les mois précédents et l’absence de double comptage.
+- [ ] Vérifier la page de classement sur ordinateur et téléphone avec une session autorisée.
