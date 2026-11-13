@@ -1,0 +1,4 @@
+- [x] Ajouter et conserver le mode de paiement des retraits sans toucher aux reçus ni aux données existantes.
+- [x] Afficher les modes dans l’historique et les recettes journalières sans double comptage.
+- [x] Tester le formulaire, les calculs et la conservation des anciens retraits (16 tests réussis).
+- [ ] Vérifier un enregistrement réel dans le compte de l’utilisateur : aucune session disponible, aucun compte ne correspond à l’utilisateur demandeur.

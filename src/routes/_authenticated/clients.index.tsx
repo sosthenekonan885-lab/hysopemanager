@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { dateFr } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/clients/")({
-  head: () => ({ meta: [{ title: "Clients — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Clients — Hysope Manager" }, { name: "description", content: "Clients du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Clients — Hysope Manager" }, { property: "og:description", content: "Clients du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Clients,
 });
 

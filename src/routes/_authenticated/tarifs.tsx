@@ -11,7 +11,7 @@ import { fcfa, dateTimeFr } from "@/lib/format";
 import { useMe } from "@/hooks/use-me";
 
 export const Route = createFileRoute("/_authenticated/tarifs")({
-  head: () => ({ meta: [{ title: "Tarifs — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Tarifs — Hysope Manager" }, { name: "description", content: "Tarifs du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Tarifs — Hysope Manager" }, { property: "og:description", content: "Tarifs du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Tarifs,
 });
 

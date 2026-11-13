@@ -10,7 +10,7 @@ import { periodStats } from "@/lib/cash";
 import { useMe } from "@/hooks/use-me";
 
 export const Route = createFileRoute("/_authenticated/rapports")({
-  head: () => ({ meta: [{ title: "Rapports — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Rapports — Hysope Manager" }, { name: "description", content: "Rapports des encaissements du Pressing L’Hysope par période et mode de paiement." }, { property: "og:title", content: "Rapports — Hysope Manager" }, { property: "og:description", content: "Suivi des recettes, retraits et modes de paiement du Pressing L’Hysope." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => { const { data: me } = useMe(); return <AdminOnly isAdmin={me?.isAdmin}><Reports /></AdminOnly>; },
 });
 
@@ -33,7 +33,7 @@ function Reports() {
   const long = (new Date(to).getTime() - new Date(from).getTime()) / 864e5 > 62;
   const key = (iso: string) => iso.slice(0, long ? 7 : 10);
   const rows = new Map<string, { k: string; depots: number; retraits: number; commandes: number }>();
-  const row = (k: string) => { if (!rows.has(k)) rows.set(k, { k, depots: 0, retraits: 0, commandes: 0 }); return rows.get(k)!; };
+  const row = (k: string) => { const existing = rows.get(k); if (existing) return existing; const next = { k, depots: 0, retraits: 0, commandes: 0 }; rows.set(k, next); return next; };
   s?.payments.filter((x) => x.context === "depot").forEach((x) => (row(key(x.created_at)).depots += x.amount));
   s?.withdrawals.forEach((w) => (row(key(w.date)).retraits += w.amount));
   s?.ordersList.forEach((o) => o.created_at && (row(key(o.created_at)).commandes += 1));
@@ -59,6 +59,7 @@ function Reports() {
         <Stat label="Espèces" value={fcfa(s?.especes)} />
         <Stat label="Wave" value={fcfa(s?.wave)} />
         <Stat label="Orange Money" value={fcfa(s?.om)} />
+        {!!s?.unknownMethod && <Stat label="Mode non renseigné (anciens retraits)" value={fcfa(s.unknownMethod)} />}
         <Stat label="Dépenses" value={fcfa(s?.expenses)} />
         <Stat label="Écarts de caisse" value={fcfa(gaps)} />
         <Stat label="Solde financier" value={fcfa((s?.revenue ?? 0) - (s?.expenses ?? 0))} accent />

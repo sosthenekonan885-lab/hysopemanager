@@ -10,7 +10,7 @@ import { METHOD_LABEL, dateFr, fcfa, todayISO, type PayMethod } from "@/lib/form
 import { useMe } from "@/hooks/use-me";
 
 export const Route = createFileRoute("/_authenticated/depenses")({
-  head: () => ({ meta: [{ title: "Dépenses — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Dépenses — Hysope Manager" }, { name: "description", content: "Dépenses du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Dépenses — Hysope Manager" }, { property: "og:description", content: "Dépenses du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => { const { data: me } = useMe(); return <AdminOnly isAdmin={me?.isAdmin}><Expenses /></AdminOnly>; },
 });
 

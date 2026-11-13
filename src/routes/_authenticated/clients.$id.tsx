@@ -13,7 +13,7 @@ import { dateFr, fcfa, orderNo } from "@/lib/format";
 import { useMe } from "@/hooks/use-me";
 
 export const Route = createFileRoute("/_authenticated/clients/$id")({
-  head: () => ({ meta: [{ title: "Fiche client — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Fiche client — Hysope Manager" }, { name: "description", content: "Fiche client du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Fiche client — Hysope Manager" }, { property: "og:description", content: "Fiche client du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: ClientPage,
 });
 

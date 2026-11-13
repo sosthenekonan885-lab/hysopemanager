@@ -7,7 +7,7 @@ import { periodStats } from "@/lib/cash";
 import { useMe } from "@/hooks/use-me";
 
 export const Route = createFileRoute("/_authenticated/tableau-de-bord")({
-  head: () => ({ meta: [{ title: "Tableau de bord — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Tableau de bord — Hysope Manager" }, { name: "description", content: "Tableau de bord du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Tableau de bord — Hysope Manager" }, { property: "og:description", content: "Tableau de bord du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Dashboard,
 });
 

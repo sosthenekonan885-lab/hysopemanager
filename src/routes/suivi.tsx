@@ -15,6 +15,8 @@ export const Route = createFileRoute("/suivi")({
       { name: "description", content: "Consultez l'état de votre commande au Pressing L'Hysope avec votre numéro de reçu." },
       { property: "og:title", content: "Suivre ma commande — Pressing L'Hysope" },
       { property: "og:description", content: "Statut, date de retrait et solde de votre commande." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Suivi,

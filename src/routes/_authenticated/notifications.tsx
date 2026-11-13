@@ -7,7 +7,7 @@ import { dateTimeFr } from "@/lib/format";
 import { useMe } from "@/hooks/use-me";
 
 export const Route = createFileRoute("/_authenticated/notifications")({
-  head: () => ({ meta: [{ title: "Notifications — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Notifications — Hysope Manager" }, { name: "description", content: "Notifications du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Notifications — Hysope Manager" }, { property: "og:description", content: "Notifications du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => { const { data: me } = useMe(); return <AdminOnly isAdmin={me?.isAdmin}><Notifs /></AdminOnly>; },
 });
 

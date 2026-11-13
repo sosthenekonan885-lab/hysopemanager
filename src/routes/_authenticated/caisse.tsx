@@ -13,7 +13,7 @@ import { periodStats } from "@/lib/cash";
 import { useMe } from "@/hooks/use-me";
 
 export const Route = createFileRoute("/_authenticated/caisse")({
-  head: () => ({ meta: [{ title: "Caisse — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Caisse — Hysope Manager" }, { name: "description", content: "Caisse du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Caisse — Hysope Manager" }, { property: "og:description", content: "Caisse du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Caisse,
 });
 

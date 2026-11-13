@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useMe } from "@/hooks/use-me";
 
 export const Route = createFileRoute("/_authenticated/parametres")({
-  head: () => ({ meta: [{ title: "Paramètres — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Paramètres — Hysope Manager" }, { name: "description", content: "Paramètres du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Paramètres — Hysope Manager" }, { property: "og:description", content: "Paramètres du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => { const { data: me } = useMe(); return <AdminOnly isAdmin={me?.isAdmin}><Settings /></AdminOnly>; },
 });
 

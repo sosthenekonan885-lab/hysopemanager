@@ -10,7 +10,7 @@ import { STATUS_LABEL, dateFr, fcfa, orderNo, type OrderStatus } from "@/lib/for
 
 export const Route = createFileRoute("/_authenticated/commandes/")({
   validateSearch: z.object({ q: z.string().optional(), status: z.string().optional() }),
-  head: () => ({ meta: [{ title: "Commandes — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Commandes — Hysope Manager" }, { name: "description", content: "Commandes du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Commandes — Hysope Manager" }, { property: "og:description", content: "Commandes du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Orders,
 });
 

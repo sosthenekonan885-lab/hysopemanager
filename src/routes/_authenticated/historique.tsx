@@ -7,7 +7,7 @@ import { dateTimeFr } from "@/lib/format";
 import { useMe } from "@/hooks/use-me";
 
 export const Route = createFileRoute("/_authenticated/historique")({
-  head: () => ({ meta: [{ title: "Historique — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Historique — Hysope Manager" }, { name: "description", content: "Historique du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Historique — Hysope Manager" }, { property: "og:description", content: "Historique du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => { const { data: me } = useMe(); return <AdminOnly isAdmin={me?.isAdmin}><Audit /></AdminOnly>; },
 });
 

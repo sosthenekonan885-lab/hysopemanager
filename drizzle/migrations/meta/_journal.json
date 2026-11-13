@@ -43,6 +43,13 @@
       "when": 1794501709377,
       "tag": "0005_optional_withdrawal_receipt",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794565620236,
+      "tag": "0006_withdrawal_payment_method",
+      "breakpoints": true
     }
   ]
 }

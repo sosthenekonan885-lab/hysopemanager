@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { dateFr, orderNo } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/reclamations")({
-  head: () => ({ meta: [{ title: "Réclamations — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Réclamations — Hysope Manager" }, { name: "description", content: "Réclamations du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Réclamations — Hysope Manager" }, { property: "og:description", content: "Réclamations du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Complaints,
 });
 

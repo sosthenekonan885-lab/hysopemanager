@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/commandes/nouvelle")({
   validateSearch: z.object({ client: z.string().optional() }),
-  head: () => ({ meta: [{ title: "Nouveau dépôt — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Nouveau dépôt — Hysope Manager" }, { name: "description", content: "Nouveau dépôt du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Nouveau dépôt — Hysope Manager" }, { property: "og:description", content: "Nouveau dépôt du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: NewOrder,
 });
 

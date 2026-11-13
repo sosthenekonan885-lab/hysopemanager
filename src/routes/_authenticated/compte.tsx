@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useMe } from "@/hooks/use-me";
 
 export const Route = createFileRoute("/_authenticated/compte")({
-  head: () => ({ meta: [{ title: "Mon compte — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Mon compte — Hysope Manager" }, { name: "description", content: "Mon compte du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Mon compte — Hysope Manager" }, { property: "og:description", content: "Mon compte du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Account,
 });
 

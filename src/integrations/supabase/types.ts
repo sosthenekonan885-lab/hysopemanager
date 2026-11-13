@@ -786,6 +786,7 @@ export type Database = {
           created_by: string | null
           date: string
           id: string
+          method: Database["public"]["Enums"]["pay_method"] | null
           order_id: string | null
           receipt_no: number | null
           updated_at: string | null
@@ -798,6 +799,7 @@ export type Database = {
           created_by?: string | null
           date?: string
           id?: string
+          method?: Database["public"]["Enums"]["pay_method"] | null
           order_id?: string | null
           receipt_no?: number | null
           updated_at?: string | null
@@ -810,6 +812,7 @@ export type Database = {
           created_by?: string | null
           date?: string
           id?: string
+          method?: Database["public"]["Enums"]["pay_method"] | null
           order_id?: string | null
           receipt_no?: number | null
           updated_at?: string | null

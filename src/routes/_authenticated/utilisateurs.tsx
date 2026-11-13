@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useMe } from "@/hooks/use-me";
 
 export const Route = createFileRoute("/_authenticated/utilisateurs")({
-  head: () => ({ meta: [{ title: "Utilisateurs — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Utilisateurs — Hysope Manager" }, { name: "description", content: "Utilisateurs du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Utilisateurs — Hysope Manager" }, { property: "og:description", content: "Utilisateurs du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => { const { data: me } = useMe(); return <AdminOnly isAdmin={me?.isAdmin}><Users /></AdminOnly>; },
 });
 

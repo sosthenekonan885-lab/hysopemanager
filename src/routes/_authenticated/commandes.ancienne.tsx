@@ -12,7 +12,7 @@ import { fcfa, orderNo, todayISO } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/commandes/ancienne")({
-  head: () => ({ meta: [{ title: "Ancien reçu papier — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Ancien reçu papier — Hysope Manager" }, { name: "description", content: "Ancien reçu papier du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Ancien reçu papier — Hysope Manager" }, { property: "og:description", content: "Ancien reçu papier du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: LegacyOrder,
 });
 

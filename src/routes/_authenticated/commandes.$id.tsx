@@ -18,7 +18,7 @@ import logoAsset from "@/assets/logo-hysope.jpg.asset.json";
 
 export const Route = createFileRoute("/_authenticated/commandes/$id")({
   validateSearch: z.object({ print: z.boolean().optional() }),
-  head: () => ({ meta: [{ title: "Commande — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Commande — Hysope Manager" }, { name: "description", content: "Commande du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Commande — Hysope Manager" }, { property: "og:description", content: "Commande du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: OrderPage,
 });
 

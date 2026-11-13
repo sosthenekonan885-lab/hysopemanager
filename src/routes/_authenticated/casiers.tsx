@@ -6,7 +6,7 @@ import { LOCKERS, orderNo } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/casiers")({
-  head: () => ({ meta: [{ title: "Casiers & sacs — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Casiers & sacs — Hysope Manager" }, { name: "description", content: "Casiers & sacs du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Casiers & sacs — Hysope Manager" }, { property: "og:description", content: "Casiers & sacs du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Lockers,
 });
 

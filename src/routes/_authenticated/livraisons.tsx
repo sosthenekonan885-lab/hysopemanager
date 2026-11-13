@@ -8,7 +8,7 @@ import { fcfa, orderNo, dateTimeFr } from "@/lib/format";
 import { useMe } from "@/hooks/use-me";
 
 export const Route = createFileRoute("/_authenticated/livraisons")({
-  head: () => ({ meta: [{ title: "Livraisons — Hysope Manager" }] }),
+  head: () => ({ meta: [{ title: "Livraisons — Hysope Manager" }, { name: "description", content: "Livraisons du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:title", content: "Livraisons — Hysope Manager" }, { property: "og:description", content: "Livraisons du Pressing L’Hysope : gestion et suivi dans Hysope Manager." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Deliveries,
 });
 
