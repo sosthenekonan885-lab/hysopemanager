@@ -26,7 +26,7 @@ beforeAll(async () => {
 afterAll(() => db.close());
 
 const rank = async (y: number, m: number) =>
-  ((await db.query<{ r: { rows: { name: string; total_spent: number; orders_count: number; rank: number }[] } }>("SELECT monthly_client_ranking($1,$2) r", [y, m])).rows[0].r.rows)
+  ((await db.query<{ r: { rows: { name: string; total_spent: number; orders_count: number; rank: number }[] } }>("SELECT monthly_client_ranking($1,$2) r", [y, m])).rows[0]?.r.rows ?? [])
     .map((x) => [x.rank, x.name, Number(x.total_spent), Number(x.orders_count)]);
 
 it("classe octobre sur les seules sommes versées, sans double comptage", async () => {
