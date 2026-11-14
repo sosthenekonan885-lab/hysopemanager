@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as SuiviRouteImport } from './routes/suivi'
 import { Route as AuthenticatedCaisseRouteImport } from './routes/_authenticated/caisse'
 import { Route as AuthenticatedCasiersRouteImport } from './routes/_authenticated/casiers'
+import { Route as AuthenticatedClassementRouteImport } from './routes/_authenticated/classement'
 import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
 import { Route as AuthenticatedDepensesRouteImport } from './routes/_authenticated/depenses'
 import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated/historique'
@@ -55,6 +56,11 @@ const AuthenticatedCaisseRoute = AuthenticatedCaisseRouteImport.update({
 const AuthenticatedCasiersRoute = AuthenticatedCasiersRouteImport.update({
   id: '/casiers',
   path: '/casiers',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedClassementRoute = AuthenticatedClassementRouteImport.update({
+  id: '/classement',
+  path: '/classement',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedCompteRoute = AuthenticatedCompteRouteImport.update({
@@ -162,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/suivi': typeof SuiviRoute
   '/caisse': typeof AuthenticatedCaisseRoute
   '/casiers': typeof AuthenticatedCasiersRoute
+  '/classement': typeof AuthenticatedClassementRoute
   '/compte': typeof AuthenticatedCompteRoute
   '/depenses': typeof AuthenticatedDepensesRoute
   '/historique': typeof AuthenticatedHistoriqueRoute
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/suivi': typeof SuiviRoute
   '/caisse': typeof AuthenticatedCaisseRoute
   '/casiers': typeof AuthenticatedCasiersRoute
+  '/classement': typeof AuthenticatedClassementRoute
   '/compte': typeof AuthenticatedCompteRoute
   '/depenses': typeof AuthenticatedDepensesRoute
   '/historique': typeof AuthenticatedHistoriqueRoute
@@ -212,6 +220,7 @@ export interface FileRoutesById {
   '/suivi': typeof SuiviRoute
   '/_authenticated/caisse': typeof AuthenticatedCaisseRoute
   '/_authenticated/casiers': typeof AuthenticatedCasiersRoute
+  '/_authenticated/classement': typeof AuthenticatedClassementRoute
   '/_authenticated/compte': typeof AuthenticatedCompteRoute
   '/_authenticated/depenses': typeof AuthenticatedDepensesRoute
   '/_authenticated/historique': typeof AuthenticatedHistoriqueRoute
@@ -238,6 +247,7 @@ export interface FileRouteTypes {
     | '/suivi'
     | '/caisse'
     | '/casiers'
+    | '/classement'
     | '/compte'
     | '/depenses'
     | '/historique'
@@ -262,6 +272,7 @@ export interface FileRouteTypes {
     | '/suivi'
     | '/caisse'
     | '/casiers'
+    | '/classement'
     | '/compte'
     | '/depenses'
     | '/historique'
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/suivi'
     | '/_authenticated/caisse'
     | '/_authenticated/casiers'
+    | '/_authenticated/classement'
     | '/_authenticated/compte'
     | '/_authenticated/depenses'
     | '/_authenticated/historique'
@@ -348,6 +360,13 @@ declare module '@tanstack/react-router' {
       path: '/casiers'
       fullPath: '/casiers'
       preLoaderRoute: typeof AuthenticatedCasiersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/classement': {
+      id: '/_authenticated/classement'
+      path: '/classement'
+      fullPath: '/classement'
+      preLoaderRoute: typeof AuthenticatedClassementRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/compte': {
@@ -482,6 +501,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCaisseRoute: typeof AuthenticatedCaisseRoute
   AuthenticatedCasiersRoute: typeof AuthenticatedCasiersRoute
+  AuthenticatedClassementRoute: typeof AuthenticatedClassementRoute
   AuthenticatedCompteRoute: typeof AuthenticatedCompteRoute
   AuthenticatedDepensesRoute: typeof AuthenticatedDepensesRoute
   AuthenticatedHistoriqueRoute: typeof AuthenticatedHistoriqueRoute
@@ -505,6 +525,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCaisseRoute: AuthenticatedCaisseRoute,
   AuthenticatedCasiersRoute: AuthenticatedCasiersRoute,
+  AuthenticatedClassementRoute: AuthenticatedClassementRoute,
   AuthenticatedCompteRoute: AuthenticatedCompteRoute,
   AuthenticatedDepensesRoute: AuthenticatedDepensesRoute,
   AuthenticatedHistoriqueRoute: AuthenticatedHistoriqueRoute,

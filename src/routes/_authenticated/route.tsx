@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   LayoutDashboard, ShoppingBag, Users, Archive, PackageCheck, Truck, MessageSquareWarning,
-  Wallet, Receipt, BarChart3, Tags, Bell, UserCog, History, Settings, KeyRound, LogOut, Menu, Search, X,
+  Wallet, Receipt, BarChart3, Trophy, Tags, Bell, UserCog, History, Settings, KeyRound, LogOut, Menu, Search, X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-me";
@@ -35,6 +35,7 @@ const NAV = [
 const ADMIN_NAV = [
   { to: "/depenses", label: "Dépenses", icon: Receipt },
   { to: "/rapports", label: "Rapports", icon: BarChart3 },
+  { to: "/classement", label: "Classement clients", icon: Trophy },
   { to: "/notifications", label: "Notifications", icon: Bell },
   { to: "/utilisateurs", label: "Utilisateurs", icon: UserCog },
   { to: "/historique", label: "Historique", icon: History },
