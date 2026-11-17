@@ -1,3 +1,4 @@
+import { clientName as uppercaseName } from "@/lib/article-language";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -66,7 +67,7 @@ function Withdrawals() {
   async function add(e: React.FormEvent) {
     e.preventDefault();
     const n = Number(f.receipt_no.replace(/\D/g, ""));
-    const clientName = f.client_name.trim();
+    const clientName = uppercaseName(f.client_name.trim());
     const amount = f.amount;
     if (!clientName) return void toast.error("Nom du client requis");
     if (!f.method) return void toast.error("Mode de paiement requis");
@@ -85,7 +86,7 @@ function Withdrawals() {
     const n = Number(edit.receipt_no.replace(/\D/g, ""));
     if (!edit.client_name.trim()) return void toast.error("Nom du client requis");
     if (!edit.method) return void toast.error("Mode de paiement requis");
-    const { error } = await supabase.from("withdrawals").update({ date: edit.date, client_name: edit.client_name.trim(), receipt_no: n || null, amount: Math.max(0, edit.amount), method: edit.method }).eq("id", edit.id);
+    const { error } = await supabase.from("withdrawals").update({ date: edit.date, client_name: uppercaseName(edit.client_name.trim()), receipt_no: n || null, amount: Math.max(0, edit.amount), method: edit.method }).eq("id", edit.id);
     if (error) return void toast.error(error.code === "23505" ? `Le reçu ${orderNo(n)} a déjà un retrait` : error.message);
     toast.success("Retrait modifié"); setEdit(null); refresh();
   }
@@ -104,7 +105,7 @@ function Withdrawals() {
           <form onSubmit={add} className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
             <div className="space-y-1"><Label>Date</Label><Input type="date" value={f.date} onChange={(e) => setF({ ...f, date: e.target.value })} /></div>
             <div className="space-y-1"><Label htmlFor="withdrawal-receipt">N° du reçu (facultatif)</Label><Input id="withdrawal-receipt" placeholder="000123" value={f.receipt_no} onChange={(e) => setF({ ...f, receipt_no: e.target.value })} onBlur={(e) => lookup(e.target.value)} /></div>
-            <div className="space-y-1"><Label htmlFor="withdrawal-name">Nom du client</Label><Input id="withdrawal-name" value={f.client_name} onChange={(e) => setF({ ...f, client_name: e.target.value })} /></div>
+            <div className="space-y-1"><Label htmlFor="withdrawal-name">Nom du client</Label><Input id="withdrawal-name" value={f.client_name} onChange={(e) => setF({ ...f, client_name: uppercaseName(e.target.value) })} /></div>
             <div className="space-y-1"><Label>Montant payé</Label><Input type="number" min={0} value={f.amount} onChange={(e) => setF({ ...f, amount: +e.target.value })} /></div>
             <div className="space-y-1"><Label htmlFor="withdrawal-method">Mode de paiement *</Label><PaymentSelect id="withdrawal-method" value={f.method} onChange={(method) => setF({ ...f, method })} /></div>
             <div className="flex items-end"><Button className="w-full" disabled={busy}>Enregistrer</Button></div>
@@ -133,7 +134,7 @@ function Withdrawals() {
                   <tr key={r.id} className="border-t bg-secondary/50">
                     <td className="p-2"><Input type="date" value={edit.date} onChange={(e) => setEdit({ ...edit, date: e.target.value })} /></td>
                     <td className="p-2"><Input value={edit.receipt_no} onChange={(e) => setEdit({ ...edit, receipt_no: e.target.value })} /></td>
-                    <td className="p-2"><Input value={edit.client_name} onChange={(e) => setEdit({ ...edit, client_name: e.target.value })} /></td>
+                    <td className="p-2"><Input value={edit.client_name} onChange={(e) => setEdit({ ...edit, client_name: uppercaseName(e.target.value) })} /></td>
                     <td className="p-2"><Input type="number" min={0} value={edit.amount} onChange={(e) => setEdit({ ...edit, amount: +e.target.value })} /></td>
                      <td className="min-w-40 p-2"><PaymentSelect id={`method-${r.id}`} value={edit.method} onChange={(method) => setEdit({ ...edit, method })} /></td>
                     <td colSpan={2} className="p-2"><div className="flex gap-2"><Button size="sm" onClick={save}>Enregistrer</Button><Button size="sm" variant="ghost" onClick={() => setEdit(null)}>Annuler</Button></div></td>
@@ -142,7 +143,7 @@ function Withdrawals() {
                   <tr key={r.id} className="border-t">
                     <td className="p-3">{dateFr(r.date)}</td>
                     <td>{r.order_id && r.receipt_no != null ? <Link to="/commandes/$id" params={{ id: r.order_id }} className="font-semibold text-primary">{orderNo(r.receipt_no)}</Link> : <span className="font-semibold">{r.receipt_no == null ? "—" : orderNo(r.receipt_no)}</span>}</td>
-                    <td>{r.client_name}</td>
+                    <td>{uppercaseName(r.client_name)}</td>
                     <td className="text-right font-semibold">{fcfa(r.amount)}</td>
                      <td className="px-3">{r.method ? METHOD_LABEL[r.method] : "Non renseigné"}</td>
                     <td className="pl-3 text-xs text-muted-foreground">

@@ -1,3 +1,4 @@
+import { clientName as uppercaseName } from "@/lib/article-language";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -63,7 +64,7 @@ function Orders() {
               {data.map((o) => (
                 <tr key={o.id} className="border-t hover:bg-muted/40">
                   <td className="p-3 font-semibold"><Link to="/commandes/$id" params={{ id: o.id! }} className="text-primary hover:underline">{orderNo(o.number)}</Link></td>
-                  <td><div className="font-medium">{o.client_name}</div><div className="text-xs text-muted-foreground">{o.client_phone}</div></td>
+                  <td><div className="font-medium">{uppercaseName(o.client_name)}</div><div className="text-xs text-muted-foreground">{o.client_phone}</div></td>
                   <td><StatusBadge status={o.status!} /></td>
                   <td className="font-mono">{o.locker_code ?? o.bag_code ?? "—"}</td>
                   <td>{dateFr(o.pickup_date)}</td>

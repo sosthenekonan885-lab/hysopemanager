@@ -1,0 +1,14 @@
+ALTER TABLE public.services ADD COLUMN grammatical_gender text CHECK (grammatical_gender IN ('masculin','feminin')), ADD COLUMN singular_name text, ADD COLUMN plural_name text;
+ALTER TABLE public.order_items ADD COLUMN grammatical_gender text CHECK (grammatical_gender IN ('masculin','feminin')), ADD COLUMN singular_name text, ADD COLUMN plural_name text;
+CREATE TABLE public.custom_articles (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), name text NOT NULL, grammatical_gender text NOT NULL CHECK (grammatical_gender IN ('masculin','feminin')), singular_name text NOT NULL, plural_name text NOT NULL, unit_price integer NOT NULL CHECK (unit_price > 0), created_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT, INSERT, UPDATE ON public.custom_articles TO authenticated;
+GRANT ALL ON public.custom_articles TO service_role;
+ALTER TABLE public.custom_articles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "staff custom articles" ON public.custom_articles FOR ALL TO authenticated USING (public.is_staff()) WITH CHECK (public.is_staff());
+CREATE TABLE public.partner_prices (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), client_id uuid NOT NULL REFERENCES public.clients(id), designation text NOT NULL, grammatical_gender text NOT NULL CHECK (grammatical_gender IN ('masculin','feminin')), singular_name text NOT NULL, plural_name text NOT NULL, unit_price integer NOT NULL CHECK (unit_price > 0), UNIQUE(client_id,designation));
+GRANT SELECT, INSERT, UPDATE ON public.partner_prices TO authenticated;
+GRANT ALL ON public.partner_prices TO service_role;
+ALTER TABLE public.partner_prices ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "staff partner prices" ON public.partner_prices FOR ALL TO authenticated USING (public.is_staff()) WITH CHECK (public.is_staff());
+CREATE FUNCTION public.uppercase_client_name() RETURNS trigger LANGUAGE plpgsql SET search_path = public AS $$ BEGIN NEW.name := upper(NEW.name); RETURN NEW; END $$;
+CREATE TRIGGER normalize_client_name BEFORE INSERT OR UPDATE OF name ON public.clients FOR EACH ROW EXECUTE FUNCTION public.uppercase_client_name();

@@ -5,3 +5,7 @@
 - [x] Ajouter le classement mensuel des clients par sommes réellement encaissées, avec filtres et podium.
 - [x] Tester les paiements partiels, les mois précédents et l’absence de double comptage.
 - [ ] Vérifier la page de classement sur ordinateur et téléphone avec une session autorisée.
+- [ ] Ajouter la facturation professionnelle et les tarifs habituels par établissement.
+- [ ] Ajouter les articles libres réutilisables et leurs accords grammaticaux.
+- [ ] Compléter les fiches clients, les noms en majuscules et les remerciements sur les reçus.
+- [ ] Tester les nouvelles règles et les parcours disponibles sans modifier les opérations existantes.

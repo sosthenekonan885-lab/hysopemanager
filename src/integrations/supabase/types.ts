@@ -250,6 +250,36 @@ export type Database = {
           },
         ]
       }
+      custom_articles: {
+        Row: {
+          created_at: string
+          grammatical_gender: string
+          id: string
+          name: string
+          plural_name: string
+          singular_name: string
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          grammatical_gender: string
+          id?: string
+          name: string
+          plural_name: string
+          singular_name: string
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          grammatical_gender?: string
+          id?: string
+          name?: string
+          plural_name?: string
+          singular_name?: string
+          unit_price?: number
+        }
+        Relationships: []
+      }
       expense_categories: {
         Row: {
           id: string
@@ -343,34 +373,43 @@ export type Database = {
         Row: {
           colors: string[]
           designation: string
+          grammatical_gender: string | null
           id: string
           observation: string | null
           order_id: string
+          plural_name: string | null
           quantity: number
           ready: boolean
           service_id: string | null
+          singular_name: string | null
           unit_price: number
         }
         Insert: {
           colors?: string[]
           designation: string
+          grammatical_gender?: string | null
           id?: string
           observation?: string | null
           order_id: string
+          plural_name?: string | null
           quantity?: number
           ready?: boolean
           service_id?: string | null
+          singular_name?: string | null
           unit_price: number
         }
         Update: {
           colors?: string[]
           designation?: string
+          grammatical_gender?: string | null
           id?: string
           observation?: string | null
           order_id?: string
+          plural_name?: string | null
           quantity?: number
           ready?: boolean
           service_id?: string | null
+          singular_name?: string | null
           unit_price?: number
         }
         Relationships: [
@@ -553,6 +592,44 @@ export type Database = {
           },
         ]
       }
+      partner_prices: {
+        Row: {
+          client_id: string
+          designation: string
+          grammatical_gender: string
+          id: string
+          plural_name: string
+          singular_name: string
+          unit_price: number
+        }
+        Insert: {
+          client_id: string
+          designation: string
+          grammatical_gender: string
+          id?: string
+          plural_name: string
+          singular_name: string
+          unit_price: number
+        }
+        Update: {
+          client_id?: string
+          designation?: string
+          grammatical_gender?: string
+          id?: string
+          plural_name?: string
+          singular_name?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_prices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number
@@ -708,30 +785,39 @@ export type Database = {
         Row: {
           active: boolean
           category_id: string
+          grammatical_gender: string | null
           id: string
           name: string
+          plural_name: string | null
           price: number | null
           price_max: number | null
+          singular_name: string | null
           sort: number
           variable: boolean
         }
         Insert: {
           active?: boolean
           category_id: string
+          grammatical_gender?: string | null
           id?: string
           name: string
+          plural_name?: string | null
           price?: number | null
           price_max?: number | null
+          singular_name?: string | null
           sort?: number
           variable?: boolean
         }
         Update: {
           active?: boolean
           category_id?: string
+          grammatical_gender?: string | null
           id?: string
           name?: string
+          plural_name?: string | null
           price?: number | null
           price_max?: number | null
+          singular_name?: string | null
           sort?: number
           variable?: boolean
         }

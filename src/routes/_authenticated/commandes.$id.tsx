@@ -1,3 +1,4 @@
+import { clientName, articleLabel, RECEIPT_THANKS } from "@/lib/article-language";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
@@ -90,7 +91,7 @@ function OrderPage() {
   const { o, items, pays, reqs, comps } = data;
   const cl = data.extra?.clients;
   const isPro = data.extra?.receipt_type === "pro";
-  const waText = encodeURIComponent(`PRESSING L'HYSOPE — Reçu ${orderNo(o.number)}\nClient : ${o.client_name}\n${items.map((i) => `${i.quantity} × ${i.designation} : ${fcfa(i.quantity * i.unit_price)}`).join("\n")}\nTotal : ${fcfa(o.final_total)}\nPayé : ${fcfa(o.paid)}\nReste : ${fcfa(o.balance)}`);
+  const waText = encodeURIComponent(`PRESSING L'HYSOPE — Reçu ${orderNo(o.number)}\nClient : ${clientName(o.client_name)}\n${items.map((i) => `${i.quantity} × ${articleLabel(i)} : ${fcfa(i.quantity * i.unit_price)}`).join("\n")}\nTotal : ${fcfa(o.final_total)}\nPayé : ${fcfa(o.paid)}\nReste : ${fcfa(o.balance)}\n${RECEIPT_THANKS}`);
   const waPhone = (o.client_phone ?? "").replace(/\D/g, "");
   const balance = o.balance ?? 0;
   const active = o.status !== "annule";
@@ -162,7 +163,7 @@ function OrderPage() {
     <div>
       <PageHeader
         title={`Commande ${orderNo(o.number)}`}
-        subtitle={`${o.client_name} · ${o.client_phone ?? ""} · déposée le ${dateTimeFr(o.created_at)}`}
+        subtitle={`${clientName(o.client_name)} · ${o.client_phone ?? ""} · déposée le ${dateTimeFr(o.created_at)}`}
         actions={<><Button variant="outline" onClick={() => { window.print(); setPrintOk(true); }}><Printer className="mr-2 h-4 w-4" />{printOk ? "Réimprimer" : "Imprimer le reçu"}</Button><Button variant="outline" asChild><a href={`https://wa.me/${waPhone.length === 10 ? "225" + waPhone : waPhone}?text=${waText}`} target="_blank" rel="noreferrer">Envoyer par WhatsApp</a></Button></>}
       />
       {printOk && <div className="no-print mb-4 rounded-lg bg-success/15 p-3 text-sm font-medium text-success">Reçu imprimé avec succès. Utilisez « Réimprimer » si besoin (ou « Enregistrer en PDF » dans la fenêtre d'impression).</div>}
@@ -187,8 +188,8 @@ function OrderPage() {
                   {items.map((i) => (
                     <tr key={i.id} className="border-t">
                       <td className="py-2">{i.quantity}</td>
-                      <td>{i.designation}{i.observation && <div className="text-xs text-muted-foreground">⚠ {i.observation}</div>}</td>
-                      <td className="text-xs">{i.colors.join(", ")}</td>
+                      <td>{articleLabel(i, false)}{i.observation && <div className="text-xs text-muted-foreground">⚠ {i.observation}</div>}</td>
+                      <td className="text-xs">{i.colors.map((color) => articleLabel({ ...i, designation: "", singular_name: "", plural_name: "", colors: [color] }).trim()).join(", ")}</td>
                       <td className="text-right">{fcfa(i.unit_price)}</td>
                       <td className="text-right font-semibold">{fcfa(i.quantity * i.unit_price)}</td>
                       <td className="no-print pl-2">
@@ -358,7 +359,7 @@ function OrderPage() {
 
       {/* Reçu ½ A4 */}
       {isPro ? (
-        <div className="print-area hidden print:block">
+        <div className="print-area mt-8 border-t bg-card print:mt-0 print:border-0">
           <div className="relative isolate overflow-hidden border p-6 text-[11px] text-foreground" style={{ minHeight: "270mm" }}>
             <img src={logoAsset.url} alt="" aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[120mm] w-[120mm] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover" style={{ opacity: 0.08, filter: "grayscale(1) sepia(1) hue-rotate(180deg) saturate(2.5) brightness(1.3)", WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }} />
             <div className="flex items-start justify-between border-b-2 border-primary pb-3">
@@ -366,15 +367,15 @@ function OrderPage() {
                 <img src={logoAsset.url} alt="Logo" className="h-16 w-16 rounded-full object-cover" />
                 <div><div className="font-display text-2xl font-bold">PRESSING L'HYSOPE</div><div>Yopougon Ananeraie · Tél. : 07 08 52 11 44 / 05 45 51 92 36</div></div>
               </div>
-              <div className="text-right"><div className="text-xs uppercase tracking-wide">Reçu professionnel</div><div className="text-xl font-bold">{orderNo(o.number)}</div></div>
+              <div className="text-right"><div className="text-xs uppercase tracking-wide">Facture / reçu professionnel</div><div className="text-xl font-bold">{orderNo(o.number)}</div></div>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-4">
               <div className="rounded border p-2">
                 <div className="text-[10px] uppercase text-muted-foreground">Établissement</div>
-                <div className="text-sm font-bold">{o.client_name}</div>
+                <div className="text-sm font-bold">{clientName(o.client_name)}</div>
                 {cl?.establishment_type && <div>{cl.establishment_type}</div>}
                 {o.client_phone && <div>Tél. : {o.client_phone}</div>}
-                {cl?.contact_person && <div>Responsable : {cl.contact_person}{cl.contact_phone ? ` — ${cl.contact_phone}` : ""}</div>}
+                {cl?.contact_person && <div>Responsable : {clientName(cl.contact_person)}{cl.contact_phone ? ` — ${cl.contact_phone}` : ""}</div>}
               </div>
               <div className="rounded border p-2">
                 <div>Date de dépôt : <b>{dateFr(o.created_at)}</b></div>
@@ -384,7 +385,7 @@ function OrderPage() {
             </div>
             <table className="mt-3 w-full border-collapse">
               <thead><tr className="bg-secondary"><th className="border p-1 text-left">DÉSIGNATION</th><th className="border p-1 text-right">QTÉ</th><th className="border p-1 text-right">PRIX UNITAIRE</th><th className="border p-1 text-right">MONTANT</th></tr></thead>
-              <tbody>{items.map((i) => <tr key={i.id}><td className="border p-1">{i.designation}{i.observation && ` (${i.observation})`}</td><td className="border p-1 text-right">{i.quantity}</td><td className="border p-1 text-right">{fcfa(i.unit_price)}</td><td className="border p-1 text-right">{fcfa(i.quantity * i.unit_price)}</td></tr>)}</tbody>
+              <tbody>{items.map((i) => <tr key={i.id}><td className="border p-1">{articleLabel(i, false)}{i.observation && ` (${i.observation})`}</td><td className="border p-1 text-right">{i.quantity}</td><td className="border p-1 text-right">{fcfa(i.unit_price)}</td><td className="border p-1 text-right">{fcfa(i.quantity * i.unit_price)}</td></tr>)}</tbody>
             </table>
             <div className="mt-3 ml-auto w-72 space-y-0.5 rounded border p-2">
               <div className="flex justify-between text-sm"><span>Total prestation</span><b>{fcfa(o.final_total)}</b></div>
@@ -397,20 +398,21 @@ function OrderPage() {
               <div><div className="border-b" style={{ height: "18mm" }} />Signature du pressing</div>
               <div><div className="border-b" style={{ height: "18mm" }} />Signature du client</div>
             </div>
+            <p className="mt-6 border-t pt-3 text-center text-[10px]">{RECEIPT_THANKS}</p>
           </div>
         </div>
       ) : (
-      <div className="print-area hidden print:block">
-        <div style={{ height: "138mm" }} className="relative isolate overflow-hidden border p-5 text-[11px] text-foreground">
+      <div className="print-area mt-8 border-t bg-card print:mt-0 print:border-0">
+        <div className="relative isolate min-h-[138mm] border p-5 text-[11px] text-foreground">
           <img src={logoAsset.url} alt="" aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[95mm] w-[95mm] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover" style={{ opacity: 0.1, filter: "grayscale(1) sepia(1) hue-rotate(180deg) saturate(2.5) brightness(1.3)", WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }} />
           <div className="flex justify-between">
             <div><div className="font-display text-xl font-bold">Pressing L'Hysope</div><div>Yopougon Ananeraie</div><div>Tél. : 07 08 52 11 44 / 05 45 51 92 36</div></div>
             <div className="text-right"><div className="text-lg font-bold">{orderNo(o.number)}</div><div>Date : {dateFr(o.created_at)}</div><div>Retrait prévu : <b>{dateFr(o.pickup_date)}</b></div></div>
           </div>
-          <div className="mt-2">Client : <b>{cl?.title ? `${cl.title} ` : ""}{o.client_name}</b> — Contact : {o.client_phone}</div>
+          <div className="mt-2">Client : <b>{cl?.title ? `${cl.title} ` : ""}{clientName(o.client_name)}</b> — Contact : {o.client_phone}</div>
           <table className="mt-2 w-full border-collapse">
             <thead><tr className="border-y"><th className="text-left">QTÉ</th><th className="text-left">DÉSIGNATION</th><th className="text-left">COULEUR</th><th className="text-right">P.U.</th><th className="text-right">TOTAL</th></tr></thead>
-            <tbody>{items.map((i) => <tr key={i.id}><td>{i.quantity}</td><td>{i.designation}{i.observation && ` (${i.observation})`}</td><td>{i.colors.join(", ")}</td><td className="text-right">{fcfa(i.unit_price)}</td><td className="text-right">{fcfa(i.quantity * i.unit_price)}</td></tr>)}</tbody>
+            <tbody>{items.map((i) => <tr key={i.id}><td>{i.quantity}</td><td>{articleLabel(i, false)}{i.observation && ` (${i.observation})`}</td><td>{i.colors.map((color) => articleLabel({ ...i, designation: "", singular_name: "", plural_name: "", colors: [color] }).trim()).join(", ")}</td><td className="text-right">{fcfa(i.unit_price)}</td><td className="text-right">{fcfa(i.quantity * i.unit_price)}</td></tr>)}</tbody>
           </table>
           <div className="mt-2 ml-auto w-56 border-t pt-1">
             <div className="flex justify-between"><span>Total</span><b>{fcfa(o.final_total)}</b></div>
@@ -419,6 +421,7 @@ function OrderPage() {
             <div className="flex justify-between"><span>Statut</span><span>{paymentStatus(o.final_total ?? 0, o.paid ?? 0)}</span></div>
           </div>
           <p className="mt-3 border-t pt-1 text-[9px]"><b>IMPORTANT :</b> passé le délai d'un mois, plus de garantie du pressing et un montant de 100 F est perçu par jour pour frais de gardiennage.</p>
+          <p className="mt-2 text-center text-[9px]">{RECEIPT_THANKS}</p>
         </div>
       </div>
       )}

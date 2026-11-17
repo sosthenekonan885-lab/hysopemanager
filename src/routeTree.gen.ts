@@ -17,6 +17,7 @@ import { Route as AuthenticatedCasiersRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedClassementRouteImport } from './routes/_authenticated/classement'
 import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
 import { Route as AuthenticatedDepensesRouteImport } from './routes/_authenticated/depenses'
+import { Route as AuthenticatedFacturationProfessionnelleRouteImport } from './routes/_authenticated/facturation-professionnelle'
 import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated/historique'
 import { Route as AuthenticatedLivraisonsRouteImport } from './routes/_authenticated/livraisons'
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
@@ -73,6 +74,12 @@ const AuthenticatedDepensesRoute = AuthenticatedDepensesRouteImport.update({
   path: '/depenses',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFacturationProfessionnelleRoute =
+  AuthenticatedFacturationProfessionnelleRouteImport.update({
+    id: '/facturation-professionnelle',
+    path: '/facturation-professionnelle',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedHistoriqueRoute = AuthenticatedHistoriqueRouteImport.update({
   id: '/historique',
   path: '/historique',
@@ -171,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/classement': typeof AuthenticatedClassementRoute
   '/compte': typeof AuthenticatedCompteRoute
   '/depenses': typeof AuthenticatedDepensesRoute
+  '/facturation-professionnelle': typeof AuthenticatedFacturationProfessionnelleRoute
   '/historique': typeof AuthenticatedHistoriqueRoute
   '/livraisons': typeof AuthenticatedLivraisonsRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
@@ -196,6 +204,7 @@ export interface FileRoutesByTo {
   '/classement': typeof AuthenticatedClassementRoute
   '/compte': typeof AuthenticatedCompteRoute
   '/depenses': typeof AuthenticatedDepensesRoute
+  '/facturation-professionnelle': typeof AuthenticatedFacturationProfessionnelleRoute
   '/historique': typeof AuthenticatedHistoriqueRoute
   '/livraisons': typeof AuthenticatedLivraisonsRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
@@ -223,6 +232,7 @@ export interface FileRoutesById {
   '/_authenticated/classement': typeof AuthenticatedClassementRoute
   '/_authenticated/compte': typeof AuthenticatedCompteRoute
   '/_authenticated/depenses': typeof AuthenticatedDepensesRoute
+  '/_authenticated/facturation-professionnelle': typeof AuthenticatedFacturationProfessionnelleRoute
   '/_authenticated/historique': typeof AuthenticatedHistoriqueRoute
   '/_authenticated/livraisons': typeof AuthenticatedLivraisonsRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
@@ -250,6 +260,7 @@ export interface FileRouteTypes {
     | '/classement'
     | '/compte'
     | '/depenses'
+    | '/facturation-professionnelle'
     | '/historique'
     | '/livraisons'
     | '/notifications'
@@ -275,6 +286,7 @@ export interface FileRouteTypes {
     | '/classement'
     | '/compte'
     | '/depenses'
+    | '/facturation-professionnelle'
     | '/historique'
     | '/livraisons'
     | '/notifications'
@@ -301,6 +313,7 @@ export interface FileRouteTypes {
     | '/_authenticated/classement'
     | '/_authenticated/compte'
     | '/_authenticated/depenses'
+    | '/_authenticated/facturation-professionnelle'
     | '/_authenticated/historique'
     | '/_authenticated/livraisons'
     | '/_authenticated/notifications'
@@ -381,6 +394,13 @@ declare module '@tanstack/react-router' {
       path: '/depenses'
       fullPath: '/depenses'
       preLoaderRoute: typeof AuthenticatedDepensesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/facturation-professionnelle': {
+      id: '/_authenticated/facturation-professionnelle'
+      path: '/facturation-professionnelle'
+      fullPath: '/facturation-professionnelle'
+      preLoaderRoute: typeof AuthenticatedFacturationProfessionnelleRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/historique': {
@@ -504,6 +524,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedClassementRoute: typeof AuthenticatedClassementRoute
   AuthenticatedCompteRoute: typeof AuthenticatedCompteRoute
   AuthenticatedDepensesRoute: typeof AuthenticatedDepensesRoute
+  AuthenticatedFacturationProfessionnelleRoute: typeof AuthenticatedFacturationProfessionnelleRoute
   AuthenticatedHistoriqueRoute: typeof AuthenticatedHistoriqueRoute
   AuthenticatedLivraisonsRoute: typeof AuthenticatedLivraisonsRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
@@ -528,6 +549,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedClassementRoute: AuthenticatedClassementRoute,
   AuthenticatedCompteRoute: AuthenticatedCompteRoute,
   AuthenticatedDepensesRoute: AuthenticatedDepensesRoute,
+  AuthenticatedFacturationProfessionnelleRoute:
+    AuthenticatedFacturationProfessionnelleRoute,
   AuthenticatedHistoriqueRoute: AuthenticatedHistoriqueRoute,
   AuthenticatedLivraisonsRoute: AuthenticatedLivraisonsRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,

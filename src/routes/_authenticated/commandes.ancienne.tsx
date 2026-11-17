@@ -1,3 +1,4 @@
+import { clientName as uppercaseName } from "@/lib/article-language";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -82,7 +83,7 @@ function LegacyOrder() {
             <CardHeader><CardTitle>Reçu et client</CardTitle></CardHeader>
             <CardContent className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1"><Label>N° du reçu papier *</Label><Input placeholder="000120" value={num} onChange={(e) => setNum(e.target.value)} /></div>
-              <div className="space-y-1"><Label>Nom du client *</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
+              <div className="space-y-1"><Label>Nom du client *</Label><Input value={name} onChange={(e) => setName(uppercaseName(e.target.value))} /></div>
               <div className="space-y-1"><Label>Téléphone (si disponible)</Label><Input value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
               <div className="space-y-1"><Label>Date de dépôt</Label><Input type="date" value={deposit} onChange={(e) => setDeposit(e.target.value)} /></div>
               <div className="space-y-1"><Label>Date prévue de retrait</Label><Input type="date" value={pickup} onChange={(e) => setPickup(e.target.value)} /></div>

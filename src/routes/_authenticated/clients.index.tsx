@@ -1,3 +1,4 @@
+import { clientName as uppercaseName } from "@/lib/article-language";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -29,7 +30,7 @@ function Clients() {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {data.map((c) => (
             <Link key={c.id} to="/clients/$id" params={{ id: c.id }} className="rounded-xl border bg-card p-4 transition hover:shadow-soft">
-              <div className="flex items-start justify-between"><div className="font-semibold">{c.name}</div>{c.delivery_eligible && <Pill tone="info">Livraison</Pill>}</div>
+              <div className="flex items-start justify-between"><div className="font-semibold">{uppercaseName(c.name)}</div>{c.delivery_eligible && <Pill tone="info">Livraison</Pill>}</div>
               <div className="text-sm text-muted-foreground">{c.phone} {c.quartier && `· ${c.quartier}`}</div>
               <div className="mt-1 text-xs text-muted-foreground">Client depuis le {dateFr(c.created_at)}</div>
             </Link>

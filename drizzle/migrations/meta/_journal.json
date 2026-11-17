@@ -57,6 +57,13 @@
       "when": 1794575831863,
       "tag": "0007_monthly_client_ranking",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794905558930,
+      "tag": "0008_partner_billing_article_grammar",
+      "breakpoints": true
     }
   ]
 }

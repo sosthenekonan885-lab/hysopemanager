@@ -1,3 +1,4 @@
+import { clientName as uppercaseName } from "@/lib/article-language";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -44,7 +45,7 @@ function Ranking() {
           {rows.slice(0, 3).map((r, i) => (
             <div key={r.client_id} className={`rounded-xl border-2 p-4 ${MEDALS[i]}`}>
               <div className="flex items-center gap-2 text-sm font-semibold"><Trophy className="h-4 w-4 text-primary" />{r.rank}{r.rank === 1 ? "er" : "e"}</div>
-              <div className="mt-1 text-lg font-bold">{r.name}</div>
+              <div className="mt-1 text-lg font-bold">{uppercaseName(r.name)}</div>
               <div className="text-sm text-muted-foreground">{r.phone ?? "—"} · {r.orders_count} commande(s)</div>
               <div className="mt-2 text-2xl font-bold text-primary">{fcfa(r.total_spent)}</div>
             </div>
@@ -55,7 +56,7 @@ function Ranking() {
             <thead className="bg-muted/50 text-left"><tr><th className="p-3">Rang</th><th className="p-3">Client</th><th className="p-3">Téléphone</th><th className="p-3 text-right">Commandes</th><th className="p-3 text-right">Montant encaissé</th></tr></thead>
             <tbody>{rows.map((r) => (
               <tr key={r.client_id} className={`border-t ${r.rank <= 3 ? "bg-accent/10 font-semibold" : ""}`}>
-                <td className="p-3">{r.rank}</td><td className="p-3">{r.name}</td><td className="p-3">{r.phone ?? "—"}</td>
+                <td className="p-3">{r.rank}</td><td className="p-3">{uppercaseName(r.name)}</td><td className="p-3">{r.phone ?? "—"}</td>
                 <td className="p-3 text-right">{r.orders_count}</td><td className="p-3 text-right">{fcfa(r.total_spent)}</td>
               </tr>))}</tbody>
           </table>
