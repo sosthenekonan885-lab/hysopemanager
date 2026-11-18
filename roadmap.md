@@ -1,7 +1,7 @@
 - [x] Ajouter et conserver le mode de paiement des retraits sans toucher aux reçus ni aux données existantes.
 - [x] Afficher les modes dans l’historique et les recettes journalières sans double comptage.
 - [x] Tester le formulaire, les calculs et la conservation des anciens retraits (16 tests réussis).
-- [ ] Vérifier un enregistrement réel dans le compte de l’utilisateur : aucune session disponible, aucun compte ne correspond à l’utilisateur demandeur.
+- [ ] Vérifier un retrait réel avec le compte jaures : attendre une opération réelle pour ne pas ajouter de recette fictive.
 - [x] Ajouter le classement mensuel des clients par sommes réellement encaissées, avec filtres et podium.
 - [x] Tester les paiements partiels, les mois précédents et l’absence de double comptage.
 - [x] Vérifier la page de classement avec la session jaures et le choix du mois précédent sur téléphone.
