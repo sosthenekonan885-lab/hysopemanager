@@ -200,7 +200,7 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
               </div>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
                 {activeCat?.services.map((s) => (
-                  <Button key={s.id} onClick={() => addService(s)} className="rounded-lg border bg-background p-2.5 text-left text-sm transition hover:border-primary hover:shadow-soft">
+                  <Button key={s.id} variant="outline" onClick={() => addService(s)} className="h-auto flex-col items-start whitespace-normal rounded-lg border bg-background p-2.5 text-left text-sm transition hover:border-primary hover:shadow-soft">
                     <div className="font-medium">{s.name}</div>
                     <div className="text-xs text-muted-foreground">{s.price == null ? "Selon la taille" : s.price_max ? `${fcfa(s.price)} – ${fcfa(s.price_max)}` : fcfa(s.price)}</div>
                   </Button>
@@ -232,7 +232,7 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {COLORS.map((c) => (
-                      <Button key={c} onClick={() => upd(l.key, { colors: l.colors.includes(c) ? l.colors.filter((x) => x !== c) : [...l.colors, c] })}
+                      <Button key={c} variant={l.colors.includes(c) ? "default" : "outline"} aria-pressed={l.colors.includes(c)} onClick={() => upd(l.key, { colors: l.colors.includes(c) ? l.colors.filter((x) => x !== c) : [...l.colors, c] })}
                         className={cn("rounded-full border px-2 py-0.5 text-xs", l.colors.includes(c) && "border-primary bg-primary/10 font-semibold text-primary")}>{c}</Button>
                     ))}
                     <input placeholder="+ autre couleur" className="w-28 rounded-full border bg-background px-2 text-xs"
@@ -264,8 +264,8 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
               <Label>Mode</Label>
               <div className="grid grid-cols-2 gap-2">
                 {(["retrait", "livraison"] as const).map((m) => (
-                  <Button key={m} disabled={m === "livraison" && !!client && !client.delivery_eligible} onClick={() => setMode(m)}
-                    className={cn("rounded-lg border p-2 text-sm disabled:opacity-40", mode === m && "border-primary bg-primary/10 font-semibold")}>{m === "retrait" ? "Retrait au pressing" : "Livraison à domicile"}</Button>
+                  <Button key={m} variant={mode === m ? "default" : "outline"} className={cn("h-auto whitespace-normal rounded-lg border p-2 text-sm disabled:opacity-40", mode === m && "border-primary bg-primary/10 font-semibold")} disabled={m === "livraison" && !!client && !client.delivery_eligible} onClick={() => setMode(m)}>
+                    {m === "retrait" ? "Retrait au pressing" : "Livraison à domicile"}</Button>
                 ))}
               </div>
               {client && !client.delivery_eligible && <p className="text-xs text-muted-foreground">Client non éligible à la livraison (réglage administrateur).</p>}

@@ -385,7 +385,7 @@ function OrderPage() {
             </div>
             <table className="mt-3 w-full border-collapse">
               <thead><tr className="bg-secondary"><th className="border p-1 text-left">DÉSIGNATION</th><th className="border p-1 text-right">QTÉ</th><th className="border p-1 text-right">PRIX UNITAIRE</th><th className="border p-1 text-right">MONTANT</th></tr></thead>
-              <tbody>{items.map((i) => <tr key={i.id}><td className="border p-1">{articleLabel(i, false)}{i.observation && ` (${i.observation})`}</td><td className="border p-1 text-right">{i.quantity}</td><td className="border p-1 text-right">{fcfa(i.unit_price)}</td><td className="border p-1 text-right">{fcfa(i.quantity * i.unit_price)}</td></tr>)}</tbody>
+              <tbody>{items.map((i) => <tr key={i.id}><td className="border p-1">{articleLabel(i)}{i.observation && ` (${i.observation})`}</td><td className="border p-1 text-right">{i.quantity}</td><td className="border p-1 text-right">{fcfa(i.unit_price)}</td><td className="border p-1 text-right">{fcfa(i.quantity * i.unit_price)}</td></tr>)}</tbody>
             </table>
             <div className="mt-3 ml-auto w-72 space-y-0.5 rounded border p-2">
               <div className="flex justify-between text-sm"><span>Total prestation</span><b>{fcfa(o.final_total)}</b></div>

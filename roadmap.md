@@ -4,9 +4,10 @@
 - [ ] Vérifier un enregistrement réel dans le compte de l’utilisateur : aucune session disponible, aucun compte ne correspond à l’utilisateur demandeur.
 - [x] Ajouter le classement mensuel des clients par sommes réellement encaissées, avec filtres et podium.
 - [x] Tester les paiements partiels, les mois précédents et l’absence de double comptage.
-- [ ] Vérifier la page de classement sur ordinateur et téléphone avec une session autorisée.
-- [ ] Ajouter la facturation professionnelle et les tarifs habituels par établissement.
-- [ ] Ajouter les articles libres réutilisables et leurs accords grammaticaux.
-- [ ] Compléter les fiches clients, les noms en majuscules et les remerciements sur les reçus.
-- [ ] Tester les nouvelles règles et les parcours disponibles sans modifier les opérations existantes.
-- [ ] Vérifier les nouvelles pages avec le compte jaures, après autorisation de connexion.
+- [x] Vérifier la page de classement avec la session jaures et le choix du mois précédent sur téléphone.
+- [x] Ajouter la facturation professionnelle et les tarifs habituels par établissement.
+- [x] Ajouter les articles libres réutilisables et leurs accords grammaticaux.
+- [x] Compléter les fiches clients, les noms en majuscules et les remerciements sur les reçus.
+- [x] Tester les nouvelles règles et les opérations existantes : 37 tests réussis, sans ajout de facture fictive en production.
+- [x] Vérifier les nouvelles pages avec le compte jaures sur ordinateur et téléphone.
+- [ ] Vérifier l’enregistrement et l’impression d’une vraie facture : aucune commande présente ; attendre un dépôt réel pour ne pas consommer un numéro.
