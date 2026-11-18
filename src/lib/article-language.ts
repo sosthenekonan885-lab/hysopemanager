@@ -31,7 +31,7 @@ export function articleLabel(item: Grammar & { designation: string; quantity: nu
 }
 
 export function defaultGrammar(name: string): Grammar {
-  const first = name.toLocaleLowerCase("fr-FR").split(/[ (]/)[0];
+  const first = name.toLocaleLowerCase("fr-FR").split(/[ (]/)[0] ?? "";
   const feminine = ["chemise", "robe", "jupe", "serviette", "couette", "housse", "taie", "nappe", "blouse", "tenue", "veste", "combinaison", "cravate"];
   const masculine = ["pantalon", "drap", "rideau", "peignoir", "champ", "jogging", "costume", "manteau", "pull", "short", "t-shirt", "boubou", "tapis"];
   if (![...feminine, ...masculine].includes(first)) return {};

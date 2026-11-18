@@ -13,3 +13,5 @@
 - Test database numbering migrations with an isolated PGlite database using the actual migration SQL and guard function, so regression checks do not create fake receipts in production.
 - Manual withdrawals accept a nullable existing receipt number without automatic order matching; never allocate a new receipt number from the withdrawal journal.
 - Withdrawal payment reporting uses journal amounts once, resolving historical unknown methods only from matching payment amounts; exclude backing withdrawal payments from cash duplication and preserve unconfirmed delivery cash handling.
+- Individual and professional deposits share the NewOrder form and existing order/payment flow, so billing changes do not introduce a competing receipt allocator.
+- Snapshot article grammatical forms on order items; reuse partner-specific prices separately from the public catalog so later edits cannot rewrite issued receipts.

@@ -33,7 +33,7 @@ describe("formulaire de retrait", () => {
     fireEvent.change(screen.getByLabelText("Nom du client"), { target: { value: "Konan" } });
     fireEvent.change(screen.getByLabelText("Mode de paiement"), { target: { value: "especes" } });
     fireEvent.click(screen.getByRole("button", { name: /^Enregistrer$/ }));
-    await waitFor(() => expect(writes).toHaveBeenCalledWith(expect.objectContaining({ receipt_no: null, order_id: null, client_name: "Konan", amount: 0 })));
+    await waitFor(() => expect(writes).toHaveBeenCalledWith(expect.objectContaining({ receipt_no: null, order_id: null, client_name: "KONAN", amount: 0 })));
   });
   it("conserve le numéro saisi 000027", async () => {
     const Form = (Route as unknown as { component: ComponentType }).component;

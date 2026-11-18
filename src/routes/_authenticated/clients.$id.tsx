@@ -44,7 +44,7 @@ function ClientPage() {
 
   async function save() {
     if (!edit) return;
-    const { error } = await supabase.from("clients").update({ ...edit, name: clientName(edit.name) }).eq("id", id);
+    const { error } = await supabase.from("clients").update({ ...edit, name: clientName(edit["name"]) }).eq("id", id);
     if (error) toast.error(error.message); else { toast.success("Fiche mise à jour"); setEdit(null); refetch(); }
   }
 
@@ -65,10 +65,10 @@ function ClientPage() {
           <CardContent className="space-y-2">
             {orders.map((o) => {
               if (!o.id || !o.status) return null;
-              const detail = data.details.find((d) => d.id === o.id);
+              const detail = data?.details.find((d) => d.id === o.id);
               return <Link key={o.id} to="/commandes/$id" params={{ id: o.id }} className="block rounded-lg border p-3 hover:bg-muted">
                 <div className="flex flex-wrap items-center justify-between gap-2"><span className="font-semibold">{orderNo(o.number)}</span><StatusBadge status={o.status} /></div>
-                <div className="mt-2 text-sm">{data.articles.filter((i) => i.order_id === o.id).map((i) => `${i.quantity} × ${articleLabel(i)}`).join(" · ")}</div>
+                <div className="mt-2 text-sm">{data?.articles.filter((i) => i.order_id === o.id).map((i) => `${i.quantity} × ${articleLabel(i)}`).join(" · ")}</div>
                 <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm"><span>Total : {fcfa(o.final_total)}</span><span>Payé : {fcfa(o.paid)}</span><span className="font-semibold">Solde : {fcfa(o.balance)}</span><span>{paymentStatus(o.final_total ?? 0, o.paid ?? 0) === "Avance versée" ? "Partiellement payée" : paymentStatus(o.final_total ?? 0, o.paid ?? 0)}</span></div>
                 <div className="mt-1 text-xs text-muted-foreground">Dépôt : {dateFr(o.created_at)} · Retrait prévu : {dateFr(o.pickup_date)} · Retrait / livraison : {dateFr(detail?.withdrawn_at ?? detail?.delivered_at)}</div>
               </Link>;

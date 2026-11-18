@@ -19,7 +19,7 @@ import { articleLabel, clientName, defaultGrammar, PARTNER_ARTICLES, type Gramma
 
 type Line = Grammar & { key: number; service_id: string | null; designation: string; quantity: number; unit_price: number; colors: string[]; observation: string; variable: boolean; min?: number | null; max?: number | null };
 
-export function NewOrder({ initialClient, professional = false }: { initialClient?: string; professional?: boolean }) {
+export function NewOrder({ initialClient, professional = false }: { initialClient?: string | undefined; professional?: boolean }) {
   const navigate = useNavigate();
   const { data: me } = useMe();
   const [clientId, setClientId] = useState<string | null>(initialClient ?? null);
@@ -44,9 +44,16 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
     },
   });
   const { data: clients } = useQuery({
-    queryKey: ["client-search", clientQ],
+    queryKey: ["client-search", clientQ, professional],
     enabled: clientQ.length >= 2,
-    queryFn: async () => (await supabase.from("clients").select("*").or(`name.ilike.%${clientQ}%,phone.ilike.%${clientQ}%`).limit(8)).data?.filter((c) => !professional || c.is_pro) ?? [],
+    queryFn: async () => {
+      const term = clientQ.trim().replace(/[,%()]/g, " ");
+      let query = supabase.from("clients").select("*").or(`name.ilike.%${term}%,phone.ilike.%${term}%`);
+      if (professional) query = query.eq("is_pro", true);
+      const { data, error } = await query.limit(8);
+      if (error) throw error;
+      return data ?? [];
+    },
   });
   const { data: client } = useQuery({
     queryKey: ["client", clientId],
@@ -132,8 +139,8 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
                   <div className="space-y-1 sm:col-span-2">
                     <Label>Type de client</Label>
                     <div className="flex gap-2">
-                      {([[false, "Particulier"], [true, "Professionnel (hôtel, clinique, restaurant…)"]] as const).map(([v, t]) => (
-                        <Button key={t} type="button" onClick={() => { setNewClient({ ...newClient, is_pro: v }); setReceiptType(v ? "pro" : "particulier"); }} className={cn("rounded-lg border px-3 py-1.5 text-sm", newClient.is_pro === v && "border-primary bg-primary/10 font-semibold")}>{t}</Button>
+                      {([[false, "Particulier"], [true, "Professionnel (hôtel, clinique, restaurant…)"]] as const).filter(([v]) => !professional || v).map(([v, t]) => (
+                        <Button key={t} type="button" onClick={() => { setNewClient({ ...newClient, is_pro: v }); setReceiptType(v ? "pro" : "particulier"); }} className={cn("h-auto whitespace-normal rounded-lg border px-3 py-1.5 text-sm", newClient.is_pro === v && "border-primary bg-primary/10 font-semibold")}>{t}</Button>
                       ))}
                     </div>
                   </div>
@@ -157,13 +164,13 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
                   {(["name", "phone", "whatsapp", "address", "quartier"] as const).map((k) => (
                     <div key={k} className="space-y-1">
                       <Label>{{ name: newClient.is_pro ? "Nom de l'établissement *" : "Nom *", phone: "Téléphone", whatsapp: "WhatsApp", address: "Adresse", quartier: "Quartier" }[k]}</Label>
-                      <Input value={newClient[k]} onChange={(e) => setNewClient({ ...newClient, [k]: k === "name" || k === "contact_person" ? clientName(e.target.value) : e.target.value })} />
+                      <Input aria-label={{ name: newClient.is_pro ? "Nom de l’établissement" : "Nom du client", phone: "Téléphone", whatsapp: "WhatsApp", address: "Adresse", quartier: "Quartier" }[k]} value={newClient[k]} onChange={(e) => setNewClient({ ...newClient, [k]: k === "name" ? clientName(e.target.value) : e.target.value })} />
                     </div>
                   ))}
                   {newClient.is_pro && (["contact_person", "contact_phone"] as const).map((k) => (
                     <div key={k} className="space-y-1">
                       <Label>{k === "contact_person" ? "Personne responsable" : "Contact du responsable"}</Label>
-                      <Input value={newClient[k]} onChange={(e) => setNewClient({ ...newClient, [k]: k === "name" || k === "contact_person" ? clientName(e.target.value) : e.target.value })} />
+                      <Input value={newClient[k]} onChange={(e) => setNewClient({ ...newClient, [k]: k === "contact_person" ? clientName(e.target.value) : e.target.value })} />
                     </div>
                   ))}
                   <div className="space-y-1 sm:col-span-2"><Label>Informations complémentaires</Label><Textarea value={newClient.notes} onChange={(e) => setNewClient({ ...newClient, notes: e.target.value })} /></div>
@@ -201,7 +208,7 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
               </div>
               </>}
               {professional && <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {(PARTNER_ARTICLES[partnerType] ?? PARTNER_ARTICLES["Résidence"]).map((a) => {
+                {(PARTNER_ARTICLES[partnerType] ?? PARTNER_ARTICLES["Résidence"] ?? []).map((a) => {
                   const saved = partnerPrices?.find((p) => p.designation === a.name);
                   return <Button key={a.name} variant="outline" className="h-auto whitespace-normal text-left" onClick={() => addFree({ designation: a.name, singular_name: a.name, plural_name: a.plural, grammatical_gender: a.gender, quantity: 1, unit_price: saved?.unit_price ?? 0 }, false)}>{a.name}</Button>;
                 })}
@@ -269,7 +276,7 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
                 <label key={k} className="flex items-center gap-2 text-sm"><input type="radio" checked={payOpt === k} onChange={() => setPayOpt(k)} />{v}</label>
               ))}
             </div>
-            {payOpt === "avance" && <div className="space-y-1"><Label>Montant de l'avance</Label><Input type="number" value={advance} onChange={(e) => setAdvance(+e.target.value)} /><p className="text-sm">Solde restant : <b>{fcfa(total - advance)}</b></p></div>}
+            {payOpt === "avance" && <div className="space-y-1"><Label htmlFor="deposit-advance">Montant de l'avance</Label><Input id="deposit-advance" type="number" value={advance} onChange={(e) => setAdvance(+e.target.value)} /><p className="text-sm">Solde restant : <b>{fcfa(total - advance)}</b></p></div>}
             {payOpt !== "retrait" && (
               <div className="grid grid-cols-3 gap-2">
                 {(Object.keys(METHOD_LABEL) as PayMethod[]).map((m) => (

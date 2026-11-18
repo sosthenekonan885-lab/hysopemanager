@@ -16,6 +16,7 @@ export function ArticleEditor({ onAdd, allowRemember = true }: { onAdd: (article
   return <form className="grid gap-3 border-t pt-4 sm:grid-cols-2" onSubmit={async (e) => {
     e.preventDefault(); setBusy(true);
     try { await onAdd({ designation: name.trim(), singular_name: name.trim(), plural_name: plural.trim(), grammatical_gender: gender, unit_price: Number(price), quantity }, remember); setName(""); setPlural(""); setPrice(""); setQuantity(1); }
+    catch { /* The caller displays the storage error; keep entered values for retry. */ }
     finally { setBusy(false); }
   }}>
     <h3 className="font-semibold sm:col-span-2">Article personnalisé</h3>

@@ -9,3 +9,4 @@
 - [ ] Ajouter les articles libres réutilisables et leurs accords grammaticaux.
 - [ ] Compléter les fiches clients, les noms en majuscules et les remerciements sur les reçus.
 - [ ] Tester les nouvelles règles et les parcours disponibles sans modifier les opérations existantes.
+- [ ] Vérifier les nouvelles pages avec le compte jaures, après autorisation de connexion.
