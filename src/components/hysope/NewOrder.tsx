@@ -140,7 +140,7 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
                     <Label>Type de client</Label>
                     <div className="flex gap-2">
                       {([[false, "Particulier"], [true, "Professionnel (hôtel, clinique, restaurant…)"]] as const).filter(([v]) => !professional || v).map(([v, t]) => (
-                        <Button key={t} type="button" onClick={() => { setNewClient({ ...newClient, is_pro: v }); setReceiptType(v ? "pro" : "particulier"); }} className={cn("h-auto whitespace-normal rounded-lg border px-3 py-1.5 text-sm", newClient.is_pro === v && "border-primary bg-primary/10 font-semibold")}>{t}</Button>
+                          <Button key={t} variant="outline" type="button" aria-pressed={newClient.is_pro === v} onClick={() => { setNewClient({ ...newClient, is_pro: v }); setReceiptType(v ? "pro" : "particulier"); }} className={cn("h-auto whitespace-normal rounded-lg border px-3 py-1.5 text-sm", newClient.is_pro === v && "border-primary bg-primary/10 font-semibold text-primary")}>{t}</Button>
                       ))}
                     </div>
                   </div>
@@ -149,7 +149,7 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
                       <Label>Titre</Label>
                       <div className="flex gap-2">
                         {["M.", "Mme", "Mlle"].map((t) => (
-                          <Button key={t} type="button" onClick={() => setNewClient({ ...newClient, name: clientName(newClient.name.trim()), title: t })} className={cn("rounded-lg border px-3 py-1.5 text-sm", newClient.title === t && "border-primary bg-primary/10 font-semibold")}>{t}</Button>
+                          <Button key={t} variant="outline" type="button" aria-pressed={newClient.title === t} onClick={() => setNewClient({ ...newClient, name: clientName(newClient.name.trim()), title: t })} className={cn("rounded-lg border px-3 py-1.5 text-sm", newClient.title === t && "border-primary bg-primary/10 font-semibold text-primary")}>{t}</Button>
                         ))}
                       </div>
                     </div>
@@ -254,7 +254,7 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
               <Label>Modèle de reçu</Label>
               <div className="grid grid-cols-2 gap-2">
                 {([["particulier", "Particulier"], ["pro", "Professionnel"]] as const).map(([k, v]) => (
-                  <Button key={k} type="button" onClick={() => setReceiptType(k)} className={cn("rounded-lg border p-2 text-sm", receiptType === k && "border-primary bg-primary/10 font-semibold")}>{v}</Button>
+                  <Button key={k} variant="outline" type="button" aria-pressed={receiptType === k} onClick={() => setReceiptType(k)} className={cn("rounded-lg border p-2 text-sm", receiptType === k && "border-primary bg-primary/10 font-semibold text-primary")}>{v}</Button>
                 ))}
               </div>
             </div>
@@ -264,7 +264,7 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
               <Label>Mode</Label>
               <div className="grid grid-cols-2 gap-2">
                 {(["retrait", "livraison"] as const).map((m) => (
-                  <Button key={m} variant={mode === m ? "default" : "outline"} className={cn("h-auto whitespace-normal rounded-lg border p-2 text-sm disabled:opacity-40", mode === m && "border-primary bg-primary/10 font-semibold")} disabled={m === "livraison" && !!client && !client.delivery_eligible} onClick={() => setMode(m)}>
+                  <Button key={m} variant="outline" aria-pressed={mode === m} className={cn("h-auto whitespace-normal rounded-lg border p-2 text-sm disabled:opacity-40", mode === m && "border-primary bg-primary/10 font-semibold text-primary")} disabled={m === "livraison" && !!client && !client.delivery_eligible} onClick={() => setMode(m)}>
                     {m === "retrait" ? "Retrait au pressing" : "Livraison à domicile"}</Button>
                 ))}
               </div>
@@ -280,7 +280,7 @@ export function NewOrder({ initialClient, professional = false }: { initialClien
             {payOpt !== "retrait" && (
               <div className="grid grid-cols-3 gap-2">
                 {(Object.keys(METHOD_LABEL) as PayMethod[]).map((m) => (
-                  <Button key={m} onClick={() => setMethod(m)} className={cn("rounded-lg border p-2 text-xs", method === m && "border-primary bg-primary/10 font-semibold")}>{METHOD_LABEL[m]}</Button>
+                  <Button key={m} variant="outline" aria-pressed={method === m} onClick={() => setMethod(m)} className={cn("rounded-lg border p-2 text-xs", method === m && "border-primary bg-primary/10 font-semibold text-primary")}>{METHOD_LABEL[m]}</Button>
                 ))}
               </div>
             )}
