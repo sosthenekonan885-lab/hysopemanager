@@ -64,6 +64,13 @@
       "when": 1794905558930,
       "tag": "0008_partner_billing_article_grammar",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1795614166124,
+      "tag": "0009_whatsapp_notifications",
+      "breakpoints": true
     }
   ]
 }
