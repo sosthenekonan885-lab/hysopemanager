@@ -138,3 +138,8 @@
   .no-print { display: none !important; }
   @page { size: A4; margin: 10mm; }
 }
+
+@page a5paysage { size: A5 landscape; margin: 5mm; }
+@media print {
+  .receipt-a5 { page: a5paysage; }
+}

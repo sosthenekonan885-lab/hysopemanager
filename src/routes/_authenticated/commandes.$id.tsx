@@ -16,6 +16,7 @@ import { COMPLAINT_TYPES, LOCKERS, METHOD_LABEL, dateFr, dateTimeFr, fcfa, order
 import { useMe } from "@/hooks/use-me";
 import { cn } from "@/lib/utils";
 import logoAsset from "@/assets/logo-hysope.jpg.asset.json";
+import newLogoAsset from "@/assets/logo-hysope-pressing.jpg.asset.json";
 
 export const Route = createFileRoute("/_authenticated/commandes/$id")({
   validateSearch: z.object({ print: z.boolean().optional() }),
@@ -402,11 +403,11 @@ function OrderPage() {
           </div>
         </div>
       ) : (
-      <div className="print-area mt-8 border-t bg-card print:mt-0 print:border-0">
-        <div className="relative isolate min-h-[138mm] border p-5 text-[11px] text-foreground">
+      <div className="print-area receipt-a5 mt-8 border-t bg-card print:mt-0 print:border-0">
+        <div className="relative isolate mx-auto min-h-[138mm] w-full max-w-[200mm] border p-4 text-[10.5px] text-foreground">
           <img src={logoAsset.url} alt="" aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[95mm] w-[95mm] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover" style={{ opacity: 0.1, filter: "grayscale(1) sepia(1) hue-rotate(180deg) saturate(2.5) brightness(1.3)", WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }} />
           <div className="flex justify-between">
-            <div><div className="font-display text-xl font-bold">Pressing L'Hysope</div><div>Yopougon Ananeraie</div><div>Tél. : 07 08 52 11 44 / 05 45 51 92 36</div></div>
+            <div className="flex items-center gap-3"><img src={newLogoAsset.url} alt="Logo Pressing L'Hysope" className="h-16 w-16 rounded-full object-cover" style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }} /><div><div className="font-display text-xl font-bold">Pressing L'Hysope</div><div>Yopougon Ananeraie</div><div>Tél. : <b>07 57 32 14 89</b> · 07 08 52 11 44 / 05 45 51 92 36</div></div></div>
             <div className="text-right"><div className="text-lg font-bold">{orderNo(o.number)}</div><div>Date : {dateFr(o.created_at)}</div><div>Retrait prévu : <b>{dateFr(o.pickup_date)}</b></div></div>
           </div>
           <div className="mt-2">Client : <b>{cl?.title ? `${cl.title} ` : ""}{clientName(o.client_name)}</b> — Contact : {o.client_phone}</div>
@@ -420,8 +421,12 @@ function OrderPage() {
             <div className="flex justify-between"><span>Solde</span><b>{fcfa(balance)}</b></div>
             <div className="flex justify-between"><span>Statut</span><span>{paymentStatus(o.final_total ?? 0, o.paid ?? 0)}</span></div>
           </div>
-          <p className="mt-3 border-t pt-1 text-[9px]"><b>IMPORTANT :</b> passé le délai d'un mois, plus de garantie du pressing et un montant de 100 F est perçu par jour pour frais de gardiennage.</p>
-          <p className="mt-2 text-center text-[9px]">{RECEIPT_THANKS}</p>
+          <div className="mt-3 space-y-1 border-t pt-1 text-[8.5px] leading-snug">
+            <p><b>IMPORTANT :</b> passé le délai d'un mois, plus de garantie du pressing et un montant de 100 F est perçu par jour pour frais de magasinage.</p>
+            <p><b>Conditions :</b> les vêtements ne seront retirés qu'après traitement. Les vêtements dont les couleurs ne sont pas stables ne sont pris en compte qu'après traitement. En cas de perte ou de dégâts d'un article, la responsabilité du pressing ne peut être engagée que pour un montant équivalent à 1 fois la valeur de nettoyage de l'article. Les fermetures, boutons et accessoires en matières plastiques ne sont pas pris en compte. Les vêtements mal traités seront repris sans facture.</p>
+            <p><b>Retrait et réclamations :</b> présentez ce reçu pour retirer vos vêtements. Toute réclamation doit être faite au moment du retrait.</p>
+          </div>
+          <div className="mt-1 flex items-center justify-between text-[9px]"><span>{RECEIPT_THANKS}</span><i className="font-display font-semibold">Propreté – Rapidité – Efficacité</i></div>
         </div>
       </div>
       )}
