@@ -42,6 +42,13 @@ function OrderPage() {
   const isAdmin = !!me?.isAdmin;
   const printed = useRef(false);
   const [printOk, setPrintOk] = useState(false);
+  const [orientation, setOrientation] = useState<"paysage" | "portrait">("paysage");
+  useEffect(() => {
+    if (window.localStorage.getItem("receipt-orientation") === "portrait") setOrientation("portrait");
+  }, []);
+  useEffect(() => {
+    window.localStorage.setItem("receipt-orientation", orientation);
+  }, [orientation]);
 
   const { data, refetch } = useQuery({
     queryKey: ["order", id],
@@ -165,7 +172,7 @@ function OrderPage() {
       <PageHeader
         title={`Commande ${orderNo(o.number)}`}
         subtitle={`${clientName(o.client_name)} · ${o.client_phone ?? ""} · déposée le ${dateTimeFr(o.created_at)}`}
-        actions={<><Button variant="outline" onClick={() => { window.print(); setPrintOk(true); }}><Printer className="mr-2 h-4 w-4" />{printOk ? "Réimprimer" : "Imprimer le reçu"}</Button><Button variant="outline" asChild><a href={`https://wa.me/${waPhone.length === 10 ? "225" + waPhone : waPhone}?text=${waText}`} target="_blank" rel="noreferrer">Envoyer par WhatsApp</a></Button></>}
+        actions={<>{!isPro && <div className="no-print mr-1 inline-flex overflow-hidden rounded-lg border text-xs font-semibold"><button type="button" aria-pressed={orientation === "paysage"} onClick={() => setOrientation("paysage")} className={cn("px-3 py-2", orientation === "paysage" ? "bg-primary text-primary-foreground" : "bg-card")}>Paysage</button><button type="button" aria-pressed={orientation === "portrait"} onClick={() => setOrientation("portrait")} className={cn("px-3 py-2", orientation === "portrait" ? "bg-primary text-primary-foreground" : "bg-card")}>Portrait</button></div>}<Button variant="outline" onClick={() => { window.print(); setPrintOk(true); }}><Printer className="mr-2 h-4 w-4" />{printOk ? "Réimprimer" : "Imprimer le reçu"}</Button><Button variant="outline" asChild><a href={`https://wa.me/${waPhone.length === 10 ? "225" + waPhone : waPhone}?text=${waText}`} target="_blank" rel="noreferrer">Envoyer par WhatsApp</a></Button></>}
       />
       {printOk && <div className="no-print mb-4 rounded-lg bg-success/15 p-3 text-sm font-medium text-success">Fenêtre d’impression ouverte.</div>}
 
@@ -403,8 +410,9 @@ function OrderPage() {
           </div>
         </div>
       ) : (
-      <div className="print-area receipt-a5 mt-8 border-t bg-card print:mt-0 print:border-0">
-        <div className="relative isolate mx-auto flex h-[138mm] w-full max-w-[200mm] flex-col overflow-hidden rounded-md border-2 border-primary p-3 text-[10px] text-foreground" style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}>
+      <div className="print-area mt-8 border-t bg-card print:mt-0 print:border-0">
+        <style>{`@page { size: A5 ${orientation === "paysage" ? "landscape" : "portrait"}; margin: 5mm; }`}</style>
+        <div className={cn("relative isolate mx-auto flex w-full flex-col overflow-hidden rounded-md border-2 border-primary p-3 text-[10px] text-foreground", orientation === "paysage" ? "h-[138mm] max-w-[200mm]" : "h-[200mm] max-w-[138mm]")} style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}>
           <img src={newLogoAsset.url} alt="" aria-hidden className="pointer-events-none absolute left-1/2 top-[58%] -z-10 h-[80mm] w-[80mm] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover" style={{ opacity: 0.08 }} />
           <div className="grid grid-cols-[auto_1fr_auto] items-start gap-3">
             <img src={newLogoAsset.url} alt="Logo Pressing L'Hysope" className="h-[24mm] w-[24mm] rounded-full object-cover" />
