@@ -421,11 +421,11 @@ function OrderPage() {
               <div>📍 Yopougon Ananeraie</div>
               <div className="text-[12px] font-bold text-primary">📞 07 57 32 14 89</div>
               <div>07 08 52 11 44 / 05 45 51 92 36</div>
-              <div className="mt-1 grid grid-cols-3 gap-x-2 text-[8.5px]">{["Teinture industrielle", "Nettoyage à sec", "Stoppage", "Amidonnage", "Traitements spéciaux", "Express"].map((s) => <span key={s}>▢ {s}</span>)}</div>
+              <div className={cn("mt-1 grid gap-x-2 text-[8.5px]", orientation === "paysage" ? "grid-cols-3" : "grid-cols-2")}>{["Teinture industrielle", "Nettoyage à sec", "Stoppage", "Amidonnage", "Traitements spéciaux", "Express"].map((s) => <span key={s}>▢ {s}</span>)}</div>
             </div>
             <div className="w-[62mm] text-right">
               <p className="rounded-md border border-primary bg-secondary p-1.5 text-center text-[8px] font-semibold uppercase leading-tight"><span className="mb-0.5 block text-[9px] text-primary">Important</span>Passé le délai d'un mois, plus de garantie du pressing et un montant de 100 F est perçu par jour pour frais de magasinage.</p>
-              <div className="mt-1.5 text-lg font-bold">N° <span className="text-destructive">{orderNo(o.number)}</span></div>
+              <div className="mt-1.5 text-lg font-bold"><span className="text-destructive">{orderNo(o.number)}</span></div>
               <div>Date : {dateFr(o.created_at)}</div>
             </div>
           </div>

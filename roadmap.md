@@ -12,4 +12,4 @@
 - [x] Vérifier les nouvelles pages avec le compte jaures sur ordinateur et téléphone.
 - [x] Vérifier la préparation d’une facture sur ordinateur et téléphone : 5 articles à 500 F, avance de 1 000 F, solde de 1 500 F ; corriger la lisibilité des choix.
 - [ ] Vérifier l’enregistrement et l’impression d’une vraie facture : aucune commande présente ; attendre un dépôt réel pour ne pas consommer un numéro.
-- [ ] Vérifier l’enregistrement d’un nouveau retrait réel : attendre une opération réelle pour ne pas ajouter de recette fictive.
+- [ ] Vérifier l’enregistrement d’un nouveau retrait réel : attendre une opération réelle pour ne pas ajouter de recette fictive.- [x] Vérifier que le reçu tient sur une seule page en A5 paysage et en portrait, corriger si débordement
