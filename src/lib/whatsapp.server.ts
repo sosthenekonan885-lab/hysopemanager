@@ -13,8 +13,8 @@ async function admin() {
 
 /** Envoie une seule fois un message WhatsApp pour une commande. */
 export async function sendOrderMessage(orderId: string, kind: WaKind) {
-  const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
-  const WHATSAPP_API_KEY = process.env.WHATSAPP_API_KEY;
+  const LOVABLE_API_KEY = process.env['LOVABLE_API_KEY'];
+  const WHATSAPP_API_KEY = process.env['WHATSAPP_API_KEY'];
   if (!LOVABLE_API_KEY || !WHATSAPP_API_KEY) throw new Error("WhatsApp n'est pas configuré");
   const db = await admin();
   const { data: o, error } = await db.from("order_summary").select("id,number,client_name,client_phone,balance").eq("id", orderId).maybeSingle();
