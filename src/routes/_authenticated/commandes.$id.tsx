@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { COMPLAINT_TYPES, LOCKERS, METHOD_LABEL, dateFr, dateTimeFr, fcfa, orderNo, paymentStatus, type PayMethod } from "@/lib/format";
 import { useMe } from "@/hooks/use-me";
+import { notifyOrderReady } from "@/lib/whatsapp.functions";
 import { cn } from "@/lib/utils";
 import logoAsset from "@/assets/logo-hysope.jpg.asset.json";
 import { ReceiptQr } from "@/components/hysope/ReceiptQr";
@@ -157,6 +158,11 @@ function OrderPage() {
     const { error } = await supabase.from("orders").update(patch).eq("id", id);
     if (error) return void toast.error(error.message);
     await run(() => supabase.from("order_items").update({ ready: true }).eq("order_id", id).eq("ready", false), "Vêtements prêts");
+    if (o.delivery_mode !== "livraison") {
+      notifyOrderReady({ data: { orderId: id } })
+        .then((r) => r.ok ? toast.success("Client prévenu sur WhatsApp") : toast.warning(`WhatsApp non envoyé : ${"reason" in r ? r.reason : ""}`))
+        .catch(() => toast.warning("WhatsApp non envoyé"));
+    }
   }
 
   async function toggleItem(itemId: string, ready: boolean) {

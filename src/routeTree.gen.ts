@@ -34,6 +34,8 @@ import { Route as AuthenticatedCommandesIndexRouteImport } from './routes/_authe
 import { Route as AuthenticatedCommandesIdRouteImport } from './routes/_authenticated/commandes.$id'
 import { Route as AuthenticatedCommandesAncienneRouteImport } from './routes/_authenticated/commandes.ancienne'
 import { Route as AuthenticatedCommandesNouvelleRouteImport } from './routes/_authenticated/commandes.nouvelle'
+import { Route as ApiPublicJobsWhatsappRemindersRouteImport } from './routes/api/public/jobs/whatsapp-reminders'
+import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api/public/whatsapp/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -169,6 +171,18 @@ const AuthenticatedCommandesNouvelleRoute =
     path: '/commandes/nouvelle',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicJobsWhatsappRemindersRoute =
+  ApiPublicJobsWhatsappRemindersRouteImport.update({
+    id: '/api/public/jobs/whatsapp-reminders',
+    path: '/api/public/jobs/whatsapp-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWhatsappWebhookRoute =
+  ApiPublicWhatsappWebhookRouteImport.update({
+    id: '/api/public/whatsapp/webhook',
+    path: '/api/public/whatsapp/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -195,6 +209,8 @@ export interface FileRoutesByFullPath {
   '/commandes/nouvelle': typeof AuthenticatedCommandesNouvelleRoute
   '/clients/': typeof AuthenticatedClientsIndexRoute
   '/commandes/': typeof AuthenticatedCommandesIndexRoute
+  '/api/public/jobs/whatsapp-reminders': typeof ApiPublicJobsWhatsappRemindersRoute
+  '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -221,6 +237,8 @@ export interface FileRoutesByTo {
   '/commandes/nouvelle': typeof AuthenticatedCommandesNouvelleRoute
   '/clients': typeof AuthenticatedClientsIndexRoute
   '/commandes': typeof AuthenticatedCommandesIndexRoute
+  '/api/public/jobs/whatsapp-reminders': typeof ApiPublicJobsWhatsappRemindersRoute
+  '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -249,6 +267,8 @@ export interface FileRoutesById {
   '/_authenticated/commandes/nouvelle': typeof AuthenticatedCommandesNouvelleRoute
   '/_authenticated/clients/': typeof AuthenticatedClientsIndexRoute
   '/_authenticated/commandes/': typeof AuthenticatedCommandesIndexRoute
+  '/api/public/jobs/whatsapp-reminders': typeof ApiPublicJobsWhatsappRemindersRoute
+  '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -277,6 +297,8 @@ export interface FileRouteTypes {
     | '/commandes/nouvelle'
     | '/clients/'
     | '/commandes/'
+    | '/api/public/jobs/whatsapp-reminders'
+    | '/api/public/whatsapp/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -303,6 +325,8 @@ export interface FileRouteTypes {
     | '/commandes/nouvelle'
     | '/clients'
     | '/commandes'
+    | '/api/public/jobs/whatsapp-reminders'
+    | '/api/public/whatsapp/webhook'
   id:
     | '__root__'
     | '/'
@@ -330,12 +354,16 @@ export interface FileRouteTypes {
     | '/_authenticated/commandes/nouvelle'
     | '/_authenticated/clients/'
     | '/_authenticated/commandes/'
+    | '/api/public/jobs/whatsapp-reminders'
+    | '/api/public/whatsapp/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   SuiviRoute: typeof SuiviRoute
+  ApiPublicJobsWhatsappRemindersRoute: typeof ApiPublicJobsWhatsappRemindersRoute
+  ApiPublicWhatsappWebhookRoute: typeof ApiPublicWhatsappWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -515,6 +543,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCommandesNouvelleRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/jobs/whatsapp-reminders': {
+      id: '/api/public/jobs/whatsapp-reminders'
+      path: '/api/public/jobs/whatsapp-reminders'
+      fullPath: '/api/public/jobs/whatsapp-reminders'
+      preLoaderRoute: typeof ApiPublicJobsWhatsappRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/whatsapp/webhook': {
+      id: '/api/public/whatsapp/webhook'
+      path: '/api/public/whatsapp/webhook'
+      fullPath: '/api/public/whatsapp/webhook'
+      preLoaderRoute: typeof ApiPublicWhatsappWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -576,6 +618,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   SuiviRoute: SuiviRoute,
+  ApiPublicJobsWhatsappRemindersRoute: ApiPublicJobsWhatsappRemindersRoute,
+  ApiPublicWhatsappWebhookRoute: ApiPublicWhatsappWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
