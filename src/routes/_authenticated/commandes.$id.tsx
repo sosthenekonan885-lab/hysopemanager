@@ -404,29 +404,48 @@ function OrderPage() {
         </div>
       ) : (
       <div className="print-area receipt-a5 mt-8 border-t bg-card print:mt-0 print:border-0">
-        <div className="relative isolate mx-auto min-h-[138mm] w-full max-w-[200mm] border p-4 text-[10.5px] text-foreground">
-          <img src={logoAsset.url} alt="" aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[95mm] w-[95mm] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover" style={{ opacity: 0.1, filter: "grayscale(1) sepia(1) hue-rotate(180deg) saturate(2.5) brightness(1.3)", WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }} />
-          <div className="flex justify-between">
-            <div className="flex items-center gap-3"><img src={newLogoAsset.url} alt="Logo Pressing L'Hysope" className="h-16 w-16 rounded-full object-cover" style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }} /><div><div className="font-display text-xl font-bold">Pressing L'Hysope</div><div>Yopougon Ananeraie</div><div>Tél. : <b>07 57 32 14 89</b> · 07 08 52 11 44 / 05 45 51 92 36</div></div></div>
-            <div className="text-right"><div className="text-lg font-bold">{orderNo(o.number)}</div><div>Date : {dateFr(o.created_at)}</div><div>Retrait prévu : <b>{dateFr(o.pickup_date)}</b></div></div>
+        <div className="relative isolate mx-auto flex h-[138mm] w-full max-w-[200mm] flex-col overflow-hidden rounded-md border-2 border-primary p-3 text-[10px] text-foreground" style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}>
+          <img src={newLogoAsset.url} alt="" aria-hidden className="pointer-events-none absolute left-1/2 top-[58%] -z-10 h-[80mm] w-[80mm] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover" style={{ opacity: 0.08 }} />
+          <div className="grid grid-cols-[auto_1fr_auto] items-start gap-3">
+            <img src={newLogoAsset.url} alt="Logo Pressing L'Hysope" className="h-[24mm] w-[24mm] rounded-full object-cover" />
+            <div>
+              <div className="font-display text-base font-bold text-primary">PRESSING L'HYSOPE</div>
+              <div>📍 Yopougon Ananeraie</div>
+              <div className="text-[12px] font-bold text-primary">📞 07 57 32 14 89</div>
+              <div>07 08 52 11 44 / 05 45 51 92 36</div>
+              <div className="mt-1 grid grid-cols-3 gap-x-2 text-[8.5px]">{["Teinture industrielle", "Nettoyage à sec", "Stoppage", "Amidonnage", "Traitements spéciaux", "Express"].map((s) => <span key={s}>▢ {s}</span>)}</div>
+            </div>
+            <div className="w-[62mm] text-right">
+              <p className="rounded-md border border-primary bg-secondary p-1.5 text-center text-[8px] font-semibold uppercase leading-tight"><span className="mb-0.5 block text-[9px] text-primary">Important</span>Passé le délai d'un mois, plus de garantie du pressing et un montant de 100 F est perçu par jour pour frais de magasinage.</p>
+              <div className="mt-1.5 text-lg font-bold">N° <span className="text-destructive">{orderNo(o.number)}</span></div>
+              <div>Date : {dateFr(o.created_at)}</div>
+            </div>
           </div>
-          <div className="mt-2">Client : <b>{cl?.title ? `${cl.title} ` : ""}{clientName(o.client_name)}</b> — Contact : {o.client_phone}</div>
-          <table className="mt-2 w-full border-collapse">
-            <thead><tr className="border-y"><th className="text-left">QTÉ</th><th className="text-left">DÉSIGNATION</th><th className="text-left">COULEUR</th><th className="text-right">P.U.</th><th className="text-right">TOTAL</th></tr></thead>
-            <tbody>{items.map((i) => <tr key={i.id}><td>{i.quantity}</td><td>{articleLabel(i, false)}{i.observation && ` (${i.observation})`}</td><td>{i.colors.map((color) => articleLabel({ ...i, designation: "", singular_name: "", plural_name: "", colors: [color] }).trim()).join(", ")}</td><td className="text-right">{fcfa(i.unit_price)}</td><td className="text-right">{fcfa(i.quantity * i.unit_price)}</td></tr>)}</tbody>
+          <div className="mt-2 grid grid-cols-2 gap-3 border-b border-dotted border-primary pb-1">
+            <div>Nom du client : <b>{cl?.title ? `${cl.title} ` : ""}{clientName(o.client_name)}</b></div>
+            <div>Contact : <b>{o.client_phone}</b></div>
+          </div>
+          <table className="mt-1.5 w-full flex-1 border-collapse border border-primary [&_td]:border-x [&_td]:border-primary [&_td]:px-1.5 [&_td]:py-0.5">
+            <thead><tr className="bg-primary text-primary-foreground [&_th]:px-1.5 [&_th]:py-1"><th className="w-[18mm] text-left">QUANTITÉ</th><th className="text-center tracking-[0.3em]">DÉSIGNATION</th><th className="w-[26mm] text-right">PRIX UNITAIRE</th><th className="w-[26mm] text-right">PRIX TOTAL</th></tr></thead>
+            <tbody>
+              {items.map((i) => <tr key={i.id} className="border-b border-primary/30"><td className="text-center">{i.quantity}</td><td>{articleLabel(i)}{i.observation && ` (${i.observation})`}</td><td className="text-right">{fcfa(i.unit_price)}</td><td className="text-right">{fcfa(i.quantity * i.unit_price)}</td></tr>)}
+              {Array.from({ length: Math.max(0, 7 - items.length) }).map((_, k) => <tr key={`v${k}`} className="h-[5mm] border-b border-primary/30"><td /><td /><td /><td /></tr>)}
+            </tbody>
           </table>
-          <div className="mt-2 ml-auto w-56 border-t pt-1">
-            <div className="flex justify-between"><span>Total</span><b>{fcfa(o.final_total)}</b></div>
-            <div className="flex justify-between"><span>Avance / payé</span><span>{fcfa(o.paid)}</span></div>
-            <div className="flex justify-between"><span>Solde</span><b>{fcfa(balance)}</b></div>
-            <div className="flex justify-between"><span>Statut</span><span>{paymentStatus(o.final_total ?? 0, o.paid ?? 0)}</span></div>
+          <div className="grid grid-cols-[1fr_auto] border-x border-b border-primary">
+            <div className="grid grid-cols-[auto_repeat(6,1fr)] text-center text-[9px] [&>div]:border-r [&>div]:border-primary [&>div]:px-1">
+              <div className="row-span-2 flex flex-col justify-center bg-secondary font-bold">DATE DE<br />RETRAIT</div>
+              {["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"].map((d) => <div key={d} className="border-b border-primary">{d}</div>)}
+              <div className="col-span-6 py-0.5 text-left">Prévu le <b>{dateFr(o.pickup_date)}</b></div>
+            </div>
+            <div className="w-[52mm] px-2 py-0.5">
+              <div className="flex justify-between font-bold"><span>TOTAL</span><span>{fcfa(o.final_total)}</span></div>
+              <div className="flex justify-between"><span>Avance / payé</span><span>{fcfa(o.paid)}</span></div>
+              <div className="flex justify-between"><span>Solde · {paymentStatus(o.final_total ?? 0, o.paid ?? 0)}</span><b>{fcfa(balance)}</b></div>
+            </div>
           </div>
-          <div className="mt-3 space-y-1 border-t pt-1 text-[8.5px] leading-snug">
-            <p><b>IMPORTANT :</b> passé le délai d'un mois, plus de garantie du pressing et un montant de 100 F est perçu par jour pour frais de magasinage.</p>
-            <p><b>Conditions :</b> les vêtements ne seront retirés qu'après traitement. Les vêtements dont les couleurs ne sont pas stables ne sont pris en compte qu'après traitement. En cas de perte ou de dégâts d'un article, la responsabilité du pressing ne peut être engagée que pour un montant équivalent à 1 fois la valeur de nettoyage de l'article. Les fermetures, boutons et accessoires en matières plastiques ne sont pas pris en compte. Les vêtements mal traités seront repris sans facture.</p>
-            <p><b>Retrait et réclamations :</b> présentez ce reçu pour retirer vos vêtements. Toute réclamation doit être faite au moment du retrait.</p>
-          </div>
-          <div className="mt-1 flex items-center justify-between text-[9px]"><span>{RECEIPT_THANKS}</span><i className="font-display font-semibold">Propreté – Rapidité – Efficacité</i></div>
+          <p className="mt-1 text-[7.5px] leading-snug"><b className="underline">Conditions :</b> les vêtements ne seront retirés qu'après traitement. Les vêtements dont les couleurs ne sont pas stables ne sont pris en compte qu'après traitement. En cas de perte ou de dégâts d'un article, la responsabilité du pressing ne peut être engagée que pour un montant équivalent à 1 fois la valeur de nettoyage de l'article. Les fermetures, boutons et accessoires en matières plastiques ne sont pas pris en compte. Les vêtements mal traités seront repris sans facture. Présentez ce reçu pour retirer vos vêtements ; toute réclamation se fait au moment du retrait.</p>
+          <div className="flex items-center justify-between text-[8.5px]"><span>{RECEIPT_THANKS}</span><i className="font-display font-semibold text-primary">Propreté – Rapidité – Efficacité</i></div>
         </div>
       </div>
       )}
