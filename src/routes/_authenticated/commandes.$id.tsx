@@ -16,6 +16,7 @@ import { COMPLAINT_TYPES, LOCKERS, METHOD_LABEL, dateFr, dateTimeFr, fcfa, order
 import { useMe } from "@/hooks/use-me";
 import { cn } from "@/lib/utils";
 import logoAsset from "@/assets/logo-hysope.jpg.asset.json";
+import { ReceiptQr } from "@/components/hysope/ReceiptQr";
 import newLogoAsset from "@/assets/logo-hysope-pressing.jpg.asset.json";
 
 export const Route = createFileRoute("/_authenticated/commandes/$id")({
@@ -492,8 +493,8 @@ function OrderPage() {
               <div className="flex justify-between"><span>Solde · {paymentStatus(o.final_total ?? 0, o.paid ?? 0)}</span><b>{fcfa(balance)}</b></div>
             </div>
           </div>
-          <p className="mt-1 text-[7.3px] leading-snug"><b className="underline">Conditions :</b> les vêtements ne seront retirés qu'après traitement. Les vêtements dont les couleurs ne sont pas stables ne sont pris en compte qu'après traitement. En cas de perte ou de dégâts d'un article, la responsabilité du pressing ne peut être engagée que pour un montant équivalent à 1 fois la valeur de nettoyage de l'article. Les fermetures, boutons et accessoires en matières plastiques ne sont pas pris en compte. Les vêtements mal traités seront repris sans facture. Présentez ce reçu pour retirer vos vêtements ; toute réclamation se fait au moment du retrait.</p>
-          <div className="flex items-center justify-between text-[8.5px]"><span>{RECEIPT_THANKS}</span><i className="font-display font-semibold text-primary">Propreté – Rapidité – Efficacité</i></div>
+          <p className="mt-0.5 text-[7px] leading-tight"><b className="underline">Conditions :</b> les vêtements ne seront retirés qu'après traitement. Les vêtements dont les couleurs ne sont pas stables ne sont pris en compte qu'après traitement. En cas de perte ou de dégâts d'un article, la responsabilité du pressing ne peut être engagée que pour un montant équivalent à 1 fois la valeur de nettoyage de l'article. Les fermetures, boutons et accessoires en matières plastiques ne sont pas pris en compte. Les vêtements mal traités seront repris sans facture. Présentez ce reçu pour retirer vos vêtements ; toute réclamation se fait au moment du retrait.</p>
+          <div className="flex items-center justify-between gap-2 text-[8.5px]"><span className="flex items-center gap-1.5"><ReceiptQr number={o.number} className="h-[11mm] w-[11mm]" /><span>Scannez pour suivre votre commande.<br />{RECEIPT_THANKS}</span></span><i className="font-display font-semibold text-primary">Propreté – Rapidité – Efficacité</i></div>
         </div>
         </div>
       </div>

@@ -3,11 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   LayoutDashboard, ShoppingBag, Users, Archive, PackageCheck, Truck, MessageSquareWarning,
-  Wallet, Receipt, BarChart3, Trophy, Tags, Bell, UserCog, History, Settings, KeyRound, LogOut, Menu, Search, X,
+  Wallet, Receipt, BarChart3, Trophy, Tags, Bell, UserCog, History, Settings, KeyRound, LogOut, Menu, X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-me";
 import { logLogout } from "@/lib/auth.functions";
+import { GlobalSearch } from "@/components/hysope/GlobalSearch";
 import { Logo } from "@/components/hysope/Logo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -113,17 +114,7 @@ function Shell() {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="no-print sticky top-0 z-30 flex items-center gap-3 border-b bg-card/90 px-4 py-3 backdrop-blur">
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)}><Menu /></Button>
-          <form
-            className="relative max-w-md flex-1"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const q = new FormData(e.currentTarget).get("q")?.toString() ?? "";
-              navigate({ to: "/commandes", search: { q } });
-            }}
-          >
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input name="q" placeholder="Client, téléphone ou N° de commande…" className="h-10 w-full rounded-lg border bg-background pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring" />
-          </form>
+          <GlobalSearch />
           <Button asChild className="hidden sm:inline-flex"><Link to="/commandes/nouvelle">+ Nouveau dépôt</Link></Button>
           <div className="ml-auto text-right text-sm">
             <div className="font-semibold">{me?.profile?.full_name}</div>

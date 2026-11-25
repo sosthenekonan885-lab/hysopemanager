@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { z } from "zod";
 import { trackOrder } from "@/lib/auth.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,13 +20,15 @@ export const Route = createFileRoute("/suivi")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: z.object({ n: z.string().optional() }),
   component: Suivi,
 });
 
 type Res = Awaited<ReturnType<typeof trackOrder>>;
 
 function Suivi() {
-  const [num, setNum] = useState("");
+  const { n } = Route.useSearch();
+  const [num, setNum] = useState(n ?? "");
   const [phone, setPhone] = useState("");
   const [res, setRes] = useState<Res | null>(null);
   const [busy, setBusy] = useState(false);
