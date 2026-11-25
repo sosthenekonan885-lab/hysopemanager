@@ -42,13 +42,6 @@ function OrderPage() {
   const isAdmin = !!me?.isAdmin;
   const printed = useRef(false);
   const [printOk, setPrintOk] = useState(false);
-  const [orientation, setOrientation] = useState<"paysage" | "portrait">("paysage");
-  useEffect(() => {
-    if (window.localStorage.getItem("receipt-orientation") === "portrait") setOrientation("portrait");
-  }, []);
-  useEffect(() => {
-    window.localStorage.setItem("receipt-orientation", orientation);
-  }, [orientation]);
 
   const { data, refetch } = useQuery({
     queryKey: ["order", id],
@@ -172,7 +165,7 @@ function OrderPage() {
       <PageHeader
         title={`Commande ${orderNo(o.number)}`}
         subtitle={`${clientName(o.client_name)} · ${o.client_phone ?? ""} · déposée le ${dateTimeFr(o.created_at)}`}
-        actions={<>{!isPro && <div className="no-print mr-1 inline-flex overflow-hidden rounded-lg border text-xs font-semibold"><button type="button" aria-pressed={orientation === "paysage"} onClick={() => setOrientation("paysage")} className={cn("px-3 py-2", orientation === "paysage" ? "bg-primary text-primary-foreground" : "bg-card")}>Paysage</button><button type="button" aria-pressed={orientation === "portrait"} onClick={() => setOrientation("portrait")} className={cn("px-3 py-2", orientation === "portrait" ? "bg-primary text-primary-foreground" : "bg-card")}>Portrait</button></div>}<Button variant="outline" onClick={() => { window.print(); setPrintOk(true); }}><Printer className="mr-2 h-4 w-4" />{printOk ? "Réimprimer" : "Imprimer le reçu"}</Button><Button variant="outline" asChild><a href={`https://wa.me/${waPhone.length === 10 ? "225" + waPhone : waPhone}?text=${waText}`} target="_blank" rel="noreferrer">Envoyer par WhatsApp</a></Button></>}
+        actions={<>{!isPro && <span className="no-print mr-1 self-center rounded-lg border bg-card px-3 py-2 text-xs font-semibold">Format A5 paysage</span>}<Button variant="outline" onClick={() => { window.print(); setPrintOk(true); }}><Printer className="mr-2 h-4 w-4" />{printOk ? "Réimprimer" : "Imprimer le reçu"}</Button><Button variant="outline" asChild><a href={`https://wa.me/${waPhone.length === 10 ? "225" + waPhone : waPhone}?text=${waText}`} target="_blank" rel="noreferrer">Envoyer par WhatsApp</a></Button></>}
       />
       {printOk && <div className="no-print mb-4 rounded-lg bg-success/15 p-3 text-sm font-medium text-success">Fenêtre d’impression ouverte.</div>}
 
@@ -368,6 +361,7 @@ function OrderPage() {
       {/* Reçu ½ A4 */}
       {isPro ? (
         <div className="print-area mt-8 border-t bg-card print:mt-0 print:border-0">
+          <style>{`@page { size: A4 portrait; margin: 10mm; }`}</style>
           <div className="relative isolate overflow-hidden border p-6 text-[11px] text-foreground" style={{ minHeight: "270mm" }}>
             <img src={logoAsset.url} alt="" aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[120mm] w-[120mm] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover" style={{ opacity: 0.08, filter: "grayscale(1) sepia(1) hue-rotate(180deg) saturate(2.5) brightness(1.3)", WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }} />
             <div className="flex items-start justify-between border-b-2 border-primary pb-3">
@@ -411,49 +405,52 @@ function OrderPage() {
         </div>
       ) : (
       <div className="print-area mt-8 border-t bg-card print:mt-0 print:border-0">
-        <style>{`@page { size: A5 ${orientation === "paysage" ? "landscape" : "portrait"}; margin: 5mm; }`}</style>
-        <div className={cn("relative isolate mx-auto flex w-full flex-col overflow-hidden rounded-md border-2 border-primary p-3 text-[10px] text-foreground", orientation === "paysage" ? "h-[138mm] max-w-[200mm]" : "h-[200mm] max-w-[138mm]")} style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}>
-          <img src={newLogoAsset.url} alt="" aria-hidden className="pointer-events-none absolute left-1/2 top-[58%] -z-10 h-[80mm] w-[80mm] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover" style={{ opacity: 0.08 }} />
-          <div className="grid grid-cols-[auto_1fr_auto] items-start gap-3">
-            <img src={newLogoAsset.url} alt="Logo Pressing L'Hysope" className="h-[24mm] w-[24mm] rounded-full object-cover" />
+        <style>{`@page { size: A5 landscape; margin: 5mm; } @media print { .receipt-a5 { margin: 0 !important; } }`}</style>
+        <div className="overflow-x-auto py-4 print:overflow-visible print:p-0">
+        <div className="receipt-a5 relative isolate mx-auto flex h-[138mm] w-[200mm] shrink-0 flex-col overflow-hidden rounded-md border-2 border-primary bg-card px-[4mm] py-[3mm] text-[9.5px] leading-tight text-foreground" style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}>
+          <img src={newLogoAsset.url} alt="" aria-hidden className="pointer-events-none absolute inset-x-0 top-[38mm] -z-10 mx-auto h-[75mm] w-[75mm] rounded-full object-cover" style={{ opacity: 0.08 }} />
+          <div className="grid grid-cols-[22mm_1fr_64mm] items-start gap-[3mm]">
+            <img src={newLogoAsset.url} alt="Logo Pressing L'Hysope" className="h-[22mm] w-[22mm] rounded-full object-cover" />
             <div>
               <div className="font-display text-base font-bold text-primary">PRESSING L'HYSOPE</div>
               <div>📍 Yopougon Ananeraie</div>
               <div className="text-[12px] font-bold text-primary">📞 07 57 32 14 89</div>
               <div>07 08 52 11 44 / 05 45 51 92 36</div>
-              <div className={cn("mt-1 grid gap-x-2 text-[8.5px]", orientation === "paysage" ? "grid-cols-3" : "grid-cols-2")}>{["Teinture industrielle", "Nettoyage à sec", "Stoppage", "Amidonnage", "Traitements spéciaux", "Express"].map((s) => <span key={s}>▢ {s}</span>)}</div>
+              <div className="mt-1 grid grid-cols-3 gap-x-2 gap-y-0.5 text-[8px]">{["Teinture industrielle", "Nettoyage à sec", "Stoppage", "Amidonnage", "Traitements spéciaux", "Express"].map((s) => <span key={s}>▢ {s}</span>)}</div>
             </div>
-            <div className="w-[62mm] text-right">
+            <div className="text-right">
               <p className="rounded-md border border-primary bg-secondary p-1.5 text-center text-[8px] font-semibold uppercase leading-tight"><span className="mb-0.5 block text-[9px] text-primary">Important</span>Passé le délai d'un mois, plus de garantie du pressing et un montant de 100 F est perçu par jour pour frais de magasinage.</p>
-              <div className="mt-1.5 text-lg font-bold"><span className="text-destructive">{orderNo(o.number)}</span></div>
+              <div className="mt-1 text-base font-bold leading-none"><span className="text-destructive">{orderNo(o.number)}</span></div>
               <div>Date : {dateFr(o.created_at)}</div>
             </div>
           </div>
-          <div className="mt-2 grid grid-cols-2 gap-3 border-b border-dotted border-primary pb-1">
+          <div className="mt-1.5 grid grid-cols-[1.4fr_1fr] gap-3 border-b border-dotted border-primary pb-1">
             <div>Nom du client : <b>{cl?.title ? `${cl.title} ` : ""}{clientName(o.client_name)}</b></div>
             <div>Contact : <b>{o.client_phone}</b></div>
           </div>
-          <table className="mt-1.5 w-full flex-1 border-collapse border border-primary [&_td]:border-x [&_td]:border-primary [&_td]:px-1.5 [&_td]:py-0.5">
-            <thead><tr className="bg-primary text-primary-foreground [&_th]:px-1.5 [&_th]:py-1"><th className="w-[18mm] text-left">QUANTITÉ</th><th className="text-center tracking-[0.3em]">DÉSIGNATION</th><th className="w-[26mm] text-right">PRIX UNITAIRE</th><th className="w-[26mm] text-right">PRIX TOTAL</th></tr></thead>
+          <table className="mt-1 w-full table-fixed border-collapse border border-primary [&_td]:border-x [&_td]:border-primary [&_td]:px-1.5 [&_td]:py-0.5">
+            <thead><tr className="bg-primary text-primary-foreground [&_th]:px-1.5 [&_th]:py-1"><th className="w-[20mm] text-center">QUANTITÉ</th><th className="text-center tracking-[0.2em]">DÉSIGNATION</th><th className="w-[28mm] text-right">PRIX UNITAIRE</th><th className="w-[28mm] text-right">PRIX TOTAL</th></tr></thead>
             <tbody>
-              {items.map((i) => <tr key={i.id} className="border-b border-primary/30"><td className="text-center">{i.quantity}</td><td>{articleLabel(i)}{i.observation && ` (${i.observation})`}</td><td className="text-right">{fcfa(i.unit_price)}</td><td className="text-right">{fcfa(i.quantity * i.unit_price)}</td></tr>)}
-              {Array.from({ length: Math.max(0, 7 - items.length) }).map((_, k) => <tr key={`v${k}`} className="h-[5mm] border-b border-primary/30"><td /><td /><td /><td /></tr>)}
+              {items.map((i) => <tr key={i.id} className={cn("border-b border-primary/30", items.length > 10 ? "h-[4mm]" : "h-[5.5mm]")}><td className="text-center">{i.quantity}</td><td className="truncate">{articleLabel(i)}{i.observation && ` (${i.observation})`}</td><td className="text-right">{fcfa(i.unit_price)}</td><td className="text-right">{fcfa(i.quantity * i.unit_price)}</td></tr>)}
+              {Array.from({ length: Math.max(0, 10 - items.length) }).map((_, k) => <tr key={`v${k}`} className="h-[5.5mm] border-b border-primary/30"><td /><td /><td /><td /></tr>)}
             </tbody>
           </table>
-          <div className="grid grid-cols-[1fr_auto] border-x border-b border-primary">
+          <div className="flex-1" />
+          <div className="grid grid-cols-[1fr_56mm] border-x border-b border-primary">
             <div className="grid grid-cols-[auto_repeat(6,1fr)] text-center text-[9px] [&>div]:border-r [&>div]:border-primary [&>div]:px-1">
               <div className="row-span-2 flex flex-col justify-center bg-secondary font-bold">DATE DE<br />RETRAIT</div>
               {["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"].map((d) => <div key={d} className="border-b border-primary">{d}</div>)}
               <div className="col-span-6 py-0.5 text-left">Prévu le <b>{dateFr(o.pickup_date)}</b></div>
             </div>
-            <div className="w-[52mm] px-2 py-0.5">
+            <div className="px-2 py-0.5">
               <div className="flex justify-between font-bold"><span>TOTAL</span><span>{fcfa(o.final_total)}</span></div>
               <div className="flex justify-between"><span>Avance / payé</span><span>{fcfa(o.paid)}</span></div>
               <div className="flex justify-between"><span>Solde · {paymentStatus(o.final_total ?? 0, o.paid ?? 0)}</span><b>{fcfa(balance)}</b></div>
             </div>
           </div>
-          <p className="mt-1 text-[7.5px] leading-snug"><b className="underline">Conditions :</b> les vêtements ne seront retirés qu'après traitement. Les vêtements dont les couleurs ne sont pas stables ne sont pris en compte qu'après traitement. En cas de perte ou de dégâts d'un article, la responsabilité du pressing ne peut être engagée que pour un montant équivalent à 1 fois la valeur de nettoyage de l'article. Les fermetures, boutons et accessoires en matières plastiques ne sont pas pris en compte. Les vêtements mal traités seront repris sans facture. Présentez ce reçu pour retirer vos vêtements ; toute réclamation se fait au moment du retrait.</p>
+          <p className="mt-1 text-[7.3px] leading-snug"><b className="underline">Conditions :</b> les vêtements ne seront retirés qu'après traitement. Les vêtements dont les couleurs ne sont pas stables ne sont pris en compte qu'après traitement. En cas de perte ou de dégâts d'un article, la responsabilité du pressing ne peut être engagée que pour un montant équivalent à 1 fois la valeur de nettoyage de l'article. Les fermetures, boutons et accessoires en matières plastiques ne sont pas pris en compte. Les vêtements mal traités seront repris sans facture. Présentez ce reçu pour retirer vos vêtements ; toute réclamation se fait au moment du retrait.</p>
           <div className="flex items-center justify-between text-[8.5px]"><span>{RECEIPT_THANKS}</span><i className="font-display font-semibold text-primary">Propreté – Rapidité – Efficacité</i></div>
+        </div>
         </div>
       </div>
       )}
