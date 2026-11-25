@@ -41,6 +41,7 @@ function Reports() {
   const gaps = s?.closings.reduce((a, c) => a + c.gap, 0) ?? 0;
   return (
     <div className="print-area">
+        <style>{`@page { size: A4; margin: 10mm; }`}</style>
       <PageHeader title={`Rapport ${PERIODS[p].toLowerCase()}`} subtitle={`Du ${new Date(from).toLocaleDateString("fr-FR")} au ${new Date(to).toLocaleDateString("fr-FR")}`}
         actions={<>{(Object.keys(PERIODS) as P[]).map((k) => <Button key={k} variant={k === p ? "default" : "outline"} size="sm" onClick={() => setP(k)}>{PERIODS[k]}</Button>)}<Button size="sm" variant="secondary" onClick={() => window.print()}>Imprimer</Button></>} />
       {p === "perso" && (

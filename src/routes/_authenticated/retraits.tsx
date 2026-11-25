@@ -125,6 +125,7 @@ function Withdrawals() {
       </div>
 
       <div className="print-area">
+        <style>{`@page { size: A4; margin: 10mm; }`}</style>
         {!rows.length ? <Empty>Aucun retrait sur cette période.</Empty> : (
           <div className="overflow-x-auto rounded-xl border bg-card">
             <table className="w-full text-sm">

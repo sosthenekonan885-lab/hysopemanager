@@ -34,6 +34,38 @@ function MethodPicker({ value, onChange }: { value: PayMethod; onChange: (m: Pay
   );
 }
 
+/** Imprime le reçu A5 dans un cadre dédié, pour que le navigateur applique toujours l'A5 paysage. */
+function printReceipt(): boolean {
+  const el = document.querySelector<HTMLElement>(".receipt-a5");
+  if (!el) return false;
+  const frame = document.createElement("iframe");
+  frame.setAttribute("aria-hidden", "true");
+  frame.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0;opacity:0;pointer-events:none";
+  document.body.appendChild(frame);
+  const doc = frame.contentDocument;
+  const win = frame.contentWindow;
+  if (!doc || !win) { frame.remove(); return false; }
+  const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"], style')).map((n) => n.outerHTML).join("");
+  doc.open();
+  doc.write(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Reçu</title><base href="${location.origin}/">${styles}<style>
+@page { size: A5 landscape; margin: 5mm; }
+html, body { margin: 0 !important; padding: 0 !important; width: 200mm; height: 138mm; overflow: hidden; background: transparent; }
+body * { visibility: visible !important; }
+.receipt-a5 { margin: 0 !important; width: 200mm !important; height: 138mm !important; max-width: none !important; transform: none !important; break-inside: avoid; page-break-inside: avoid; }
+* { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+</style></head><body>${el.outerHTML}</body></html>`);
+  doc.close();
+  const go = async () => {
+    try { await doc.fonts?.ready; } catch { /* ignore */ }
+    await Promise.all(Array.from(doc.images).map((img) => img.complete ? null : new Promise((r) => { img.onload = img.onerror = r; })));
+    win.focus();
+    win.print();
+    setTimeout(() => frame.remove(), 1000);
+  };
+  setTimeout(() => { void go(); }, 150);
+  return true;
+}
+
 function OrderPage() {
   const { id } = Route.useParams();
   const search = Route.useSearch();
@@ -68,9 +100,21 @@ function OrderPage() {
   useEffect(() => {
     if (search.print && data && !printed.current) {
       printed.current = true;
-      setTimeout(() => { window.print(); setPrintOk(true); }, 400);
+      setTimeout(() => { if (!printReceipt()) window.print(); setPrintOk(true); }, 400);
     }
   }, [search.print, data]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "p" && document.querySelector(".receipt-a5")) {
+        e.preventDefault();
+        printReceipt();
+        setPrintOk(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const refresh = () => { refetch(); qc.invalidateQueries({ queryKey: ["orders"] }); };
   const run = async (fn: () => PromiseLike<{ error: { message: string } | null }>, ok: string) => {
@@ -165,7 +209,7 @@ function OrderPage() {
       <PageHeader
         title={`Commande ${orderNo(o.number)}`}
         subtitle={`${clientName(o.client_name)} · ${o.client_phone ?? ""} · déposée le ${dateTimeFr(o.created_at)}`}
-        actions={<>{!isPro && <span className="no-print mr-1 self-center rounded-lg border bg-card px-3 py-2 text-xs font-semibold">Format A5 paysage</span>}<Button variant="outline" onClick={() => { window.print(); setPrintOk(true); }}><Printer className="mr-2 h-4 w-4" />{printOk ? "Réimprimer" : "Imprimer le reçu"}</Button><Button variant="outline" asChild><a href={`https://wa.me/${waPhone.length === 10 ? "225" + waPhone : waPhone}?text=${waText}`} target="_blank" rel="noreferrer">Envoyer par WhatsApp</a></Button></>}
+        actions={<>{!isPro && <span className="no-print mr-1 self-center rounded-lg border bg-card px-3 py-2 text-xs font-semibold">Format A5 paysage</span>}<Button variant="outline" onClick={() => { if (!printReceipt()) window.print(); setPrintOk(true); }}><Printer className="mr-2 h-4 w-4" />{printOk ? "Réimprimer" : "Imprimer le reçu"}</Button><Button variant="outline" asChild><a href={`https://wa.me/${waPhone.length === 10 ? "225" + waPhone : waPhone}?text=${waText}`} target="_blank" rel="noreferrer">Envoyer par WhatsApp</a></Button></>}
       />
       {printOk && <div className="no-print mb-4 rounded-lg bg-success/15 p-3 text-sm font-medium text-success">Fenêtre d’impression ouverte.</div>}
 
@@ -405,7 +449,7 @@ function OrderPage() {
         </div>
       ) : (
       <div className="print-area mt-8 border-t bg-card print:mt-0 print:border-0">
-        <style>{`@page { size: A5 landscape; margin: 5mm; } @media print { .receipt-a5 { margin: 0 !important; } }`}</style>
+        <style>{`@page { size: A5 landscape; margin: 5mm; } @media print { html, body { width: 200mm; } .print-area { width: 200mm !important; } .receipt-a5 { margin: 0 !important; transform: none !important; } }`}</style>
         <div className="overflow-x-auto py-4 print:overflow-visible print:p-0">
         <div className="receipt-a5 relative isolate mx-auto flex h-[138mm] w-[200mm] shrink-0 flex-col overflow-hidden rounded-md border-2 border-primary bg-card px-[4mm] py-[3mm] text-[9.5px] leading-tight text-foreground" style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}>
           <img src={newLogoAsset.url} alt="" aria-hidden className="pointer-events-none absolute inset-x-0 top-[38mm] -z-10 mx-auto h-[75mm] w-[75mm] rounded-full object-cover" style={{ opacity: 0.08 }} />

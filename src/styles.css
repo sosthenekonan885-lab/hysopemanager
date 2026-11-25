@@ -131,8 +131,6 @@
   h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
 }
 
-@page { size: A4; margin: 10mm; }
-
 @media print {
   body * { visibility: hidden; }
   .print-area, .print-area * { visibility: visible; }
