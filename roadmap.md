@@ -14,7 +14,7 @@
 - [ ] Vérifier l’enregistrement et l’impression d’une vraie facture : aucune commande présente ; attendre un dépôt réel pour ne pas consommer un numéro.
 - [ ] Vérifier l’enregistrement d’un nouveau retrait réel : attendre une opération réelle pour ne pas ajouter de recette fictive.- [x] Vérifier que le reçu tient sur une seule page en A5 paysage et en portrait, corriger si débordement
 
-- [ ] Reçu avec QR code de suivi
-- [ ] WhatsApp : commandes prêtes + rappel après 7 jours sans retrait
-- [ ] Barre de recherche globale
-- [ ] Mode hors ligne
+- [x] Reçu avec QR code de suivi
+- [x] WhatsApp : commandes prêtes + rappel après 7 jours sans retrait
+- [x] Barre de recherche globale
+- [x] Mode hors ligne (consultation)
