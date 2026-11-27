@@ -522,6 +522,7 @@ export type Database = {
           receipt_type: string
           status: Database["public"]["Enums"]["order_status"]
           total: number
+          track_token: string
           withdrawn_at: string | null
           withdrawn_by: string | null
         }
@@ -547,6 +548,7 @@ export type Database = {
           receipt_type?: string
           status?: Database["public"]["Enums"]["order_status"]
           total?: number
+          track_token?: string
           withdrawn_at?: string | null
           withdrawn_by?: string | null
         }
@@ -572,6 +574,7 @@ export type Database = {
           receipt_type?: string
           status?: Database["public"]["Enums"]["order_status"]
           total?: number
+          track_token?: string
           withdrawn_at?: string | null
           withdrawn_by?: string | null
         }

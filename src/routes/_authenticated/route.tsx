@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   LayoutDashboard, ShoppingBag, Users, Archive, PackageCheck, Truck, MessageSquareWarning,
-  Wallet, Receipt, BarChart3, Trophy, Tags, Bell, UserCog, History, Settings, KeyRound, LogOut, Menu, X,
+  Wallet, Receipt, BarChart3, Trophy, Tags, Bell, UserCog, History, Settings, KeyRound, ScanLine, LogOut, Menu, X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-me";
@@ -25,6 +25,7 @@ export const Route = createFileRoute("/_authenticated")({
 const NAV = [
   { to: "/tableau-de-bord", label: "Tableau de bord", icon: LayoutDashboard },
   { to: "/commandes", label: "Commandes", icon: ShoppingBag },
+  { to: "/scanner", label: "Scanner un reçu", icon: ScanLine },
   { to: "/facturation-professionnelle", label: "Facturation professionnelle", icon: Receipt },
   { to: "/clients", label: "Clients", icon: Users },
   { to: "/casiers", label: "Casiers & sacs", icon: Archive },

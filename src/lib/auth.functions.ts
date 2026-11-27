@@ -175,14 +175,23 @@ export const changeOwnPassword = createServerFn({ method: "POST" })
 
 /** Espace client public : suivi d'une commande avec numéro + téléphone. */
 export const trackOrder = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ number: z.coerce.number().int().positive(), phone: z.string().trim().min(6).max(20) }).parse(d))
+  .inputValidator((d) => z.object({ token: z.string().uuid().optional(), number: z.coerce.number().int().positive().optional(), phone: z.string().trim().max(20).optional() }).parse(d))
   .handler(async ({ data }) => {
     const db = await admin();
-    const { data: o } = await db.from("order_summary").select("number,status,pickup_date,final_total,paid,balance,client_phone,delivery_mode,created_at").eq("number", data.number).maybeSingle();
-    const digits = (s: string | null) => (s ?? "").replace(/\D/g, "").slice(-8);
-    if (!o || digits(o.client_phone) !== digits(data.phone)) return { found: false as const };
+    let id: string | null = null;
+    if (data.token) {
+      const { data: r } = await db.from("orders").select("id").eq("track_token", data.token).maybeSingle();
+      id = r?.id ?? null;
+    } else if (data.number && data.phone && data.phone.length >= 6) {
+      const { data: r } = await db.from("order_summary").select("id,client_phone").eq("number", data.number).maybeSingle();
+      const digits = (s: string | null) => (s ?? "").replace(/\D/g, "").slice(-8);
+      if (r && digits(r.client_phone) === digits(data.phone)) id = r.id;
+    }
+    if (!id) return { found: false as const };
+    const { data: o } = await db.from("order_summary").select("id,number,status,pickup_date,final_total,paid,balance,delivery_mode,created_at,locker_code,bag_code").eq("id", id).maybeSingle();
+    if (!o) return { found: false as const };
     return {
       found: true as const,
-      order: { number: o.number!, status: o.status!, pickup_date: o.pickup_date, final_total: o.final_total!, paid: o.paid!, balance: o.balance!, delivery_mode: o.delivery_mode!, created_at: o.created_at! },
+      order: { number: o.number!, status: o.status!, pickup_date: o.pickup_date, final_total: o.final_total!, paid: o.paid!, balance: o.balance!, delivery_mode: o.delivery_mode!, created_at: o.created_at!, place: o.locker_code ?? o.bag_code ?? null },
     };
   });

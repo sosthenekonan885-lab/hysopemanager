@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { COMPLAINT_TYPES, LOCKERS, METHOD_LABEL, dateFr, dateTimeFr, fcfa, orderNo, paymentStatus, type PayMethod } from "@/lib/format";
+import { COMPLAINT_TYPES, LOCKERS, METHOD_LABEL, dateFr, dateTimeFr, fcfa, orderNo, paymentStatus, paymentWatermark, paymentWatermark, type PayMethod } from "@/lib/format";
 import { useMe } from "@/hooks/use-me";
 import { notifyOrderReady } from "@/lib/whatsapp.functions";
 import { cn } from "@/lib/utils";
@@ -88,7 +88,7 @@ function OrderPage() {
         supabase.from("complaints").select("*").eq("order_id", id).order("created_at", { ascending: false }),
         supabase.from("orders").select("id,locker_code,order_items(quantity)").in("status", ["pret", "a_livrer"]).not("locker_code", "is", null),
         supabase.from("settings").select("*").eq("key", "livreur_defaut").maybeSingle(),
-        supabase.from("orders").select("receipt_type,notes,clients(title,is_pro,establishment_type,contact_person,contact_phone)").eq("id", id).single(),
+        supabase.from("orders").select("receipt_type,notes,track_token,clients(title,is_pro,establishment_type,contact_person,contact_phone)").eq("id", id).single(),
       ]);
       if (o.error) throw o.error;
       return {
@@ -414,6 +414,7 @@ function OrderPage() {
         <div className="print-area mt-8 border-t bg-card print:mt-0 print:border-0">
           <style>{`@page { size: A4 portrait; margin: 10mm; }`}</style>
           <div className="relative isolate overflow-hidden border p-6 text-[11px] text-foreground" style={{ minHeight: "270mm" }}>
+            {(() => { const w = paymentWatermark(balance, o.status!); return <div aria-hidden className={cn("pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-[24deg] whitespace-nowrap rounded-md border-[3px] px-4 py-1 font-display font-bold tracking-wider", w === "NON PAYÉ" ? "border-destructive text-destructive" : "border-primary text-primary", "text-6xl")} style={{ opacity: 0.22, WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}>{w}</div>; })()}
             <img src={logoAsset.url} alt="" aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[120mm] w-[120mm] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover" style={{ opacity: 0.08, filter: "grayscale(1) sepia(1) hue-rotate(180deg) saturate(2.5) brightness(1.3)", WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }} />
             <div className="flex items-start justify-between border-b-2 border-primary pb-3">
               <div className="flex items-center gap-3">
@@ -459,6 +460,7 @@ function OrderPage() {
         <style>{`@page { size: A5 landscape; margin: 5mm; } @media print { html, body { width: 200mm; } .print-area { width: 200mm !important; } .receipt-a5 { margin: 0 !important; transform: none !important; } }`}</style>
         <div className="overflow-x-auto py-4 print:overflow-visible print:p-0">
         <div className="receipt-a5 relative isolate mx-auto flex h-[138mm] w-[200mm] shrink-0 flex-col overflow-hidden rounded-md border-2 border-primary bg-card px-[4mm] py-[3mm] text-[9.5px] leading-tight text-foreground" style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}>
+          {(() => { const w = paymentWatermark(balance, o.status!); return <div aria-hidden className={cn("pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 -rotate-[24deg] whitespace-nowrap rounded-md border-[3px] px-4 py-1 font-display font-bold tracking-wider", w === "NON PAYÉ" ? "border-destructive text-destructive" : "border-primary text-primary", "text-4xl")} style={{ opacity: 0.22, WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}>{w}</div>; })()}
           <img src={newLogoAsset.url} alt="" aria-hidden className="pointer-events-none absolute inset-x-0 top-[38mm] -z-10 mx-auto h-[75mm] w-[75mm] rounded-full object-cover" style={{ opacity: 0.08 }} />
           <div className="grid grid-cols-[22mm_1fr_64mm] items-start gap-[3mm]">
             <img src={newLogoAsset.url} alt="Logo Pressing L'Hysope" className="h-[22mm] w-[22mm] rounded-full object-cover" />
@@ -500,7 +502,7 @@ function OrderPage() {
             </div>
           </div>
           <p className="mt-0.5 text-[7px] leading-tight"><b className="underline">Conditions :</b> les vêtements ne seront retirés qu'après traitement. Les vêtements dont les couleurs ne sont pas stables ne sont pris en compte qu'après traitement. En cas de perte ou de dégâts d'un article, la responsabilité du pressing ne peut être engagée que pour un montant équivalent à 1 fois la valeur de nettoyage de l'article. Les fermetures, boutons et accessoires en matières plastiques ne sont pas pris en compte. Les vêtements mal traités seront repris sans facture. Présentez ce reçu pour retirer vos vêtements ; toute réclamation se fait au moment du retrait.</p>
-          <div className="flex items-center justify-between gap-2 text-[8.5px]"><span className="flex items-center gap-1.5"><ReceiptQr number={o.number} className="h-[11mm] w-[11mm]" /><span>Scannez pour suivre votre commande.<br />{RECEIPT_THANKS}</span></span><i className="font-display font-semibold text-primary">Propreté – Rapidité – Efficacité</i></div>
+          <div className="flex items-center justify-between gap-2 text-[8.5px]"><span className="flex items-center gap-1.5"><ReceiptQr token={data.extra?.track_token} className="h-[11mm] w-[11mm]" /><span>Scannez pour suivre votre commande.<br />{RECEIPT_THANKS}</span></span><i className="font-display font-semibold text-primary">Propreté – Rapidité – Efficacité</i></div>
         </div>
         </div>
       </div>

@@ -25,6 +25,7 @@ import { Route as AuthenticatedParametresRouteImport } from './routes/_authentic
 import { Route as AuthenticatedRapportsRouteImport } from './routes/_authenticated/rapports'
 import { Route as AuthenticatedReclamationsRouteImport } from './routes/_authenticated/reclamations'
 import { Route as AuthenticatedRetraitsRouteImport } from './routes/_authenticated/retraits'
+import { Route as AuthenticatedScannerRouteImport } from './routes/_authenticated/scanner'
 import { Route as AuthenticatedTableauDeBordRouteImport } from './routes/_authenticated/tableau-de-bord'
 import { Route as AuthenticatedTarifsRouteImport } from './routes/_authenticated/tarifs'
 import { Route as AuthenticatedUtilisateursRouteImport } from './routes/_authenticated/utilisateurs'
@@ -119,6 +120,11 @@ const AuthenticatedRetraitsRoute = AuthenticatedRetraitsRouteImport.update({
   path: '/retraits',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedScannerRoute = AuthenticatedScannerRouteImport.update({
+  id: '/scanner',
+  path: '/scanner',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTableauDeBordRoute =
   AuthenticatedTableauDeBordRouteImport.update({
     id: '/tableau-de-bord',
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/rapports': typeof AuthenticatedRapportsRoute
   '/reclamations': typeof AuthenticatedReclamationsRoute
   '/retraits': typeof AuthenticatedRetraitsRoute
+  '/scanner': typeof AuthenticatedScannerRoute
   '/tableau-de-bord': typeof AuthenticatedTableauDeBordRoute
   '/tarifs': typeof AuthenticatedTarifsRoute
   '/utilisateurs': typeof AuthenticatedUtilisateursRoute
@@ -228,6 +235,7 @@ export interface FileRoutesByTo {
   '/rapports': typeof AuthenticatedRapportsRoute
   '/reclamations': typeof AuthenticatedReclamationsRoute
   '/retraits': typeof AuthenticatedRetraitsRoute
+  '/scanner': typeof AuthenticatedScannerRoute
   '/tableau-de-bord': typeof AuthenticatedTableauDeBordRoute
   '/tarifs': typeof AuthenticatedTarifsRoute
   '/utilisateurs': typeof AuthenticatedUtilisateursRoute
@@ -258,6 +266,7 @@ export interface FileRoutesById {
   '/_authenticated/rapports': typeof AuthenticatedRapportsRoute
   '/_authenticated/reclamations': typeof AuthenticatedReclamationsRoute
   '/_authenticated/retraits': typeof AuthenticatedRetraitsRoute
+  '/_authenticated/scanner': typeof AuthenticatedScannerRoute
   '/_authenticated/tableau-de-bord': typeof AuthenticatedTableauDeBordRoute
   '/_authenticated/tarifs': typeof AuthenticatedTarifsRoute
   '/_authenticated/utilisateurs': typeof AuthenticatedUtilisateursRoute
@@ -288,6 +297,7 @@ export interface FileRouteTypes {
     | '/rapports'
     | '/reclamations'
     | '/retraits'
+    | '/scanner'
     | '/tableau-de-bord'
     | '/tarifs'
     | '/utilisateurs'
@@ -316,6 +326,7 @@ export interface FileRouteTypes {
     | '/rapports'
     | '/reclamations'
     | '/retraits'
+    | '/scanner'
     | '/tableau-de-bord'
     | '/tarifs'
     | '/utilisateurs'
@@ -345,6 +356,7 @@ export interface FileRouteTypes {
     | '/_authenticated/rapports'
     | '/_authenticated/reclamations'
     | '/_authenticated/retraits'
+    | '/_authenticated/scanner'
     | '/_authenticated/tableau-de-bord'
     | '/_authenticated/tarifs'
     | '/_authenticated/utilisateurs'
@@ -480,6 +492,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRetraitsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/scanner': {
+      id: '/_authenticated/scanner'
+      path: '/scanner'
+      fullPath: '/scanner'
+      preLoaderRoute: typeof AuthenticatedScannerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/tableau-de-bord': {
       id: '/_authenticated/tableau-de-bord'
       path: '/tableau-de-bord'
@@ -574,6 +593,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRapportsRoute: typeof AuthenticatedRapportsRoute
   AuthenticatedReclamationsRoute: typeof AuthenticatedReclamationsRoute
   AuthenticatedRetraitsRoute: typeof AuthenticatedRetraitsRoute
+  AuthenticatedScannerRoute: typeof AuthenticatedScannerRoute
   AuthenticatedTableauDeBordRoute: typeof AuthenticatedTableauDeBordRoute
   AuthenticatedTarifsRoute: typeof AuthenticatedTarifsRoute
   AuthenticatedUtilisateursRoute: typeof AuthenticatedUtilisateursRoute
@@ -600,6 +620,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRapportsRoute: AuthenticatedRapportsRoute,
   AuthenticatedReclamationsRoute: AuthenticatedReclamationsRoute,
   AuthenticatedRetraitsRoute: AuthenticatedRetraitsRoute,
+  AuthenticatedScannerRoute: AuthenticatedScannerRoute,
   AuthenticatedTableauDeBordRoute: AuthenticatedTableauDeBordRoute,
   AuthenticatedTarifsRoute: AuthenticatedTarifsRoute,
   AuthenticatedUtilisateursRoute: AuthenticatedUtilisateursRoute,

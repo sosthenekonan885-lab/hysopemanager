@@ -60,3 +60,10 @@ export const isWeekend = (iso: string) => {
   const d = new Date(iso + "T12:00:00").getDay();
   return d === 0 || d === 6;
 };
+
+export type PayWatermark = "PAYÉ – LIVRÉ" | "PAYÉ – NON LIVRÉ" | "NON PAYÉ";
+/** Filigrane des factures : payé = plus rien à régler ; livré = vêtements retirés ou livrés. */
+export function paymentWatermark(balance: number, status: OrderStatus): PayWatermark {
+  if (balance > 0) return "NON PAYÉ";
+  return status === "retire" || status === "livre" ? "PAYÉ – LIVRÉ" : "PAYÉ – NON LIVRÉ";
+}

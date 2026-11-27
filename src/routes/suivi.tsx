@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { trackOrder } from "@/lib/auth.functions";
 import { Button } from "@/components/ui/button";
@@ -20,18 +20,23 @@ export const Route = createFileRoute("/suivi")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  validateSearch: z.object({ n: z.string().optional() }),
+  validateSearch: z.object({ n: z.string().optional(), t: z.string().optional() }),
   component: Suivi,
 });
 
 type Res = Awaited<ReturnType<typeof trackOrder>>;
 
 function Suivi() {
-  const { n } = Route.useSearch();
+  const { n, t } = Route.useSearch();
   const [num, setNum] = useState(n ?? "");
   const [phone, setPhone] = useState("");
   const [res, setRes] = useState<Res | null>(null);
   const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    if (!t) return;
+    setBusy(true);
+    trackOrder({ data: { token: t } }).then(setRes).catch(() => setRes({ found: false })).finally(() => setBusy(false));
+  }, [t]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -39,9 +44,9 @@ function Suivi() {
       <main className="mx-auto max-w-lg space-y-6 p-6">
         <div>
           <h1 className="text-3xl font-bold">Suivre ma commande</h1>
-          <p className="text-muted-foreground">Indiquez le numéro inscrit sur votre reçu et votre téléphone.</p>
+          <p className="text-muted-foreground">{t ? "Informations de votre reçu." : "Scannez le QR code de votre reçu, ou indiquez son numéro et votre téléphone."}</p>
         </div>
-        <form
+        {!t && <form
           className="space-y-4"
           onSubmit={async (e) => {
             e.preventDefault(); setBusy(true);
@@ -51,7 +56,8 @@ function Suivi() {
           <div className="space-y-2"><Label>Numéro de commande</Label><Input required placeholder="000047" value={num} onChange={(e) => setNum(e.target.value)} /></div>
           <div className="space-y-2"><Label>Téléphone</Label><Input required placeholder="07 08 52 11 44" value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
           <Button className="w-full" disabled={busy}>{busy ? "Recherche…" : "Voir ma commande"}</Button>
-        </form>
+        </form>}
+        {t && busy && <p className="text-muted-foreground">Recherche de votre commande…</p>}
         {res && !res.found && <p className="rounded-lg bg-muted p-4 text-sm">Aucune commande trouvée avec ces informations.</p>}
         {res && res.found && (
           <Card className="shadow-soft">
@@ -60,6 +66,7 @@ function Suivi() {
               <div className="text-2xl font-bold text-primary">{STATUS_LABEL[res.order.status as OrderStatus]}</div>
               <div className="grid grid-cols-2 gap-2 pt-2 text-sm">
                 <span>Déposée le</span><span className="text-right">{dateFr(res.order.created_at)}</span>
+                <span>Casier / sac</span><span className="text-right font-mono font-bold">{res.order.place ?? "—"}</span>
                 <span>Retrait prévu</span><span className="text-right">{dateFr(res.order.pickup_date)}</span>
                 <span>Total</span><span className="text-right">{fcfa(res.order.final_total)}</span>
                 <span>Déjà payé</span><span className="text-right">{fcfa(res.order.paid)}</span>
