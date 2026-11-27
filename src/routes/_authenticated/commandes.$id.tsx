@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { COMPLAINT_TYPES, LOCKERS, METHOD_LABEL, dateFr, dateTimeFr, fcfa, orderNo, paymentStatus, paymentWatermark, paymentWatermark, type PayMethod } from "@/lib/format";
+import { COMPLAINT_TYPES, LOCKERS, METHOD_LABEL, dateFr, dateTimeFr, fcfa, orderNo, paymentStatus, paymentWatermark, type PayMethod } from "@/lib/format";
 import { useMe } from "@/hooks/use-me";
 import { notifyOrderReady } from "@/lib/whatsapp.functions";
 import { cn } from "@/lib/utils";
