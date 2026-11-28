@@ -29,14 +29,14 @@ type Res = Awaited<ReturnType<typeof trackOrder>>;
 function Suivi() {
   const { n, t } = Route.useSearch();
   const [num, setNum] = useState(n ?? "");
-  const [phone, setPhone] = useState("");
   const [res, setRes] = useState<Res | null>(null);
   const [busy, setBusy] = useState(false);
   useEffect(() => {
-    if (!t) return;
+    const num0 = Number((n ?? "").replace(/\D/g, ""));
+    if (!t && !num0) return;
     setBusy(true);
-    trackOrder({ data: { token: t } }).then(setRes).catch(() => setRes({ found: false })).finally(() => setBusy(false));
-  }, [t]);
+    trackOrder({ data: t ? { token: t } : { number: num0 } }).then(setRes).catch(() => setRes({ found: false })).finally(() => setBusy(false));
+  }, [t, n]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -44,18 +44,17 @@ function Suivi() {
       <main className="mx-auto max-w-lg space-y-6 p-6">
         <div>
           <h1 className="text-3xl font-bold">Suivre ma commande</h1>
-          <p className="text-muted-foreground">{t ? "Informations de votre reçu." : "Scannez le QR code de votre reçu, ou indiquez son numéro et votre téléphone."}</p>
+          <p className="text-muted-foreground">{t || n ? "Informations de votre reçu." : "Scannez le QR code de votre reçu, ou indiquez son numéro."}</p>
         </div>
         {!t && <form
           className="space-y-4"
           onSubmit={async (e) => {
             e.preventDefault(); setBusy(true);
-            try { setRes(await trackOrder({ data: { number: Number(num.replace(/\D/g, "")), phone } })); } finally { setBusy(false); }
+            try { setRes(await trackOrder({ data: { number: Number(num.replace(/\D/g, "")) } })); } finally { setBusy(false); }
           }}
         >
           <div className="space-y-2"><Label>Numéro de commande</Label><Input required placeholder="000047" value={num} onChange={(e) => setNum(e.target.value)} /></div>
-          <div className="space-y-2"><Label>Téléphone</Label><Input required placeholder="07 08 52 11 44" value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
-          <Button className="w-full" disabled={busy}>{busy ? "Recherche…" : "Voir ma commande"}</Button>
+                    <Button className="w-full" disabled={busy}>{busy ? "Recherche…" : "Voir ma commande"}</Button>
         </form>}
         {t && busy && <p className="text-muted-foreground">Recherche de votre commande…</p>}
         {res && !res.found && <p className="rounded-lg bg-muted p-4 text-sm">Aucune commande trouvée avec ces informations.</p>}

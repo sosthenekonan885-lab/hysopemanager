@@ -15,3 +15,5 @@
 - Withdrawal payment reporting uses journal amounts once, resolving historical unknown methods only from matching payment amounts; exclude backing withdrawal payments from cash duplication and preserve unconfirmed delivery cash handling.
 - Individual and professional deposits share the NewOrder form and existing order/payment flow, so billing changes do not introduce a competing receipt allocator.
 - Snapshot article grammatical forms on order items; reuse partner-specific prices separately from the public catalog so later edits cannot rewrite issued receipts.
+
+- Public order tracking (/suivi) needs no phone: the QR token or the receipt number alone opens the order (owner choice); keep the response free of client names and phones.

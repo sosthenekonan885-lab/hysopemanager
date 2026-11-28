@@ -182,10 +182,10 @@ export const trackOrder = createServerFn({ method: "POST" })
     if (data.token) {
       const { data: r } = await db.from("orders").select("id").eq("track_token", data.token).maybeSingle();
       id = r?.id ?? null;
-    } else if (data.number && data.phone && data.phone.length >= 6) {
-      const { data: r } = await db.from("order_summary").select("id,client_phone").eq("number", data.number).maybeSingle();
-      const digits = (s: string | null) => (s ?? "").replace(/\D/g, "").slice(-8);
-      if (r && digits(r.client_phone) === digits(data.phone)) id = r.id;
+    } else if (data.number) {
+      // Téléphone facultatif (choix du pressing) : le numéro du reçu suffit.
+      const { data: r } = await db.from("order_summary").select("id").eq("number", data.number).maybeSingle();
+      id = r?.id ?? null;
     }
     if (!id) return { found: false as const };
     const { data: o } = await db.from("order_summary").select("id,number,status,pickup_date,final_total,paid,balance,delivery_mode,created_at,locker_code,bag_code").eq("id", id).maybeSingle();
